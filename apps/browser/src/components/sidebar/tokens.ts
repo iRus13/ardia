@@ -81,7 +81,7 @@ export const SIDEBAR_MOTION = { liveFold: duration.long, fold: duration.base, li
 export const HOVER_CARD_IN_SPRING = { response: 0.25, damping: 0.75 } as const;
 export const HOVER_CARD_OUT_SPRING = { response: 0.2, damping: 0.6 } as const;
 
-export const TAB_ROW = { contentLeft: 9, trailing: 6, titleGap: 5, titleHeight: 18, compactTitleHeight: 17, closeSlot: 22 } as const;
+export const TAB_ROW = { contentLeft: 10, trailing: 6, titleGap: 6, titleHeight: 18, compactTitleHeight: 17, closeSlot: 22 } as const;
 
 export const TILE_RIM = 1;
 

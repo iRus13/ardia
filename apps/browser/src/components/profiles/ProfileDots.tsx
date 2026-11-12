@@ -3,7 +3,7 @@ import { Animated, Pressable, View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import { switchProfile } from "../../state/browser/actions";
 import { noteSwitcherPress } from "../../state/telemetry/switcherPresses";
-import { layout, useTheme } from "../ui/theme";
+import { useTheme } from "../ui/theme";
 import { useIsIncognito, useProfile, useSettings } from "../../state/browser/hooks";
 import { useProfileOrder, useProfileRecords } from "../../state/profiles/hooks";
 import { useNativePagerPosition, usePagerPages, type PagerPage } from "../../state/windows/profilePager";
@@ -18,7 +18,7 @@ import { LibraryButton } from "./LibraryButton";
 
 export const PROFILE_DOTS_HEIGHT = profileSwitcher.height;
 const { band: BAND, dotTooltipLift } = profileSwitcher;
-const SIDE_ROOM = layout.sidebarInset;
+const SIDE_ROOM = profileSwitcher.inset;
 
 export function useProfileDotsShown() {
   const incognito = useIsIncognito();
