@@ -221,7 +221,7 @@ export const layout = {
   sidebarHeader: 46,
   sidebarInset: SIDEBAR_INSET,
   pinnedTop: 54,
-  pinnedHeight: 41,
+  pinnedHeight: 47,
   rowHeight: SIDEBAR_ROW.height,
   rowGap: SIDEBAR_ROW.gap,
   cardRadius: radius.chrome,

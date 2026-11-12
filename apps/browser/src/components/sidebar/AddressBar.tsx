@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Pressable, View, type ViewStyle } from "react-native";
 import { useShortcutHint, withShortcut } from "../../state/commands/commandShortcuts";
 import { layout, useTheme } from "../ui/theme";
-import { useActiveTabId, useSettings, useSidebarSide, useTabLive, useWindowFullScreen, useWindowId } from "../../state/browser/hooks";
+import { useActiveTabId, useSettings, useSidebarSide, useTabLive, useWindowId } from "../../state/browser/hooks";
 import { toggleSidebar } from "../../state/windows/actions";
 import { openEmptySidebarField } from "../../state/omnibox/barState";
 import { isAddressBarInSidebar } from "../../state/sidebar/current";
@@ -18,7 +18,7 @@ import { SidebarUrlField, useToolbarTab } from "../toolbar/Toolbar";
 import { HistoryButton, ReloadButton } from "../toolbar/NavButtons";
 import { GLYPH } from "../toolbar/tokens";
 import { HEADER_TOOLS, navButtonsFitting, type HeaderButton } from "../window/dockMotion";
-import { sidebarHeaderLayout } from "./headerLayout";
+import { useSidebarHeaderLayout } from "./useSidebarHeaderLayout";
 
 const BUTTON = layout.toolbarButton;
 const { edge: EDGE } = HEADER_TOOLS;
@@ -32,7 +32,7 @@ export function SidebarHeaderTools({ width }: { width: number }) {
   const toggle = useSettings((st) => st.showSidebarButton !== false);
   const right = useSidebarSide(windowId) === "right";
   const sidebarHint = useShortcutHint("toggleSidebar");
-  const header = sidebarHeaderLayout(useWindowFullScreen(windowId));
+  const header = useSidebarHeaderLayout(windowId);
   const toggleX = header.toggleCenter;
   const { buttons, step } = navButtonsFitting(width, BUTTON, toggle, toggleX);
   const shown = tab ? buttons : [];
@@ -102,7 +102,7 @@ export function SidebarAddressRow() {
   const windowId = useWindowId();
   const tab = useToolbarTab(useActiveTabId());
   const field = useRef<View>(null);
-  const header = sidebarHeaderLayout(useWindowFullScreen(windowId));
+  const header = useSidebarHeaderLayout(windowId);
   const anchor = () =>
     field.current?.measureInWindow((x, y, width, height) => {
       if (width && isAddressBarInSidebar(windowId)) setUrlAnchor(windowId, { left: x, top: y, width, sidebar: { height } });

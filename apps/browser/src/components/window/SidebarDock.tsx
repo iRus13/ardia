@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode }
 import { Animated, StyleSheet, View } from "react-native";
 import { switchOn } from "../../state/app/switches";
 import { useTheme } from "../ui/theme";
-import { spring, curve } from "../ui/motion";
+import { spring } from "../ui/motion";
 import { GlassFill, ink, Panel, reduceMotion, useGlass, WindowBackdrop, WindowDragRegion } from "../ui";
 import { useSidebarSide, useWindowId } from "../../state/browser/hooks";
 import { useSidebarDockState } from "../../state/windows/hooks";
@@ -14,12 +14,13 @@ import { useSidebarUi } from "../../state/sidebar/sidebarUi";
 import { peekHeld, watchHolds } from "../../state/app/transientUi";
 import { noteSidebarPeek } from "../../state/telemetry/usage";
 import { ProfileSwipe } from "./ProfileSwipe";
-import { ARC_HIDE_MS, DOCK_SPRING, SHADOWS, SIDEBAR_GLASS } from "./tokens";
+import { DOCK_SPRING, SHADOWS, SIDEBAR_GLASS, SIDEBAR_REVEAL_MOTION } from "./tokens";
 import {
   PEEK_EDGE_STRIP,
   dockMove,
   dockState,
   dockedCardInset,
+  easeOutCubic,
   edgeEventReveals,
   edgeStripOverPage,
   edgeWatchWidth,
@@ -48,7 +49,7 @@ import { useCardFrame } from "./cardFrame";
 
 const SPRING = spring(DOCK_SPRING);
 
-function useSidebarDock(open: boolean, animate: boolean, arc: boolean): { dock: Animated.Value; away: boolean } {
+function useSidebarDock(open: boolean, animate: boolean, sidebar: boolean): { dock: Animated.Value; away: boolean } {
   const windowId = useWindowId();
   const dock = useRef(new Animated.Value(open ? 1 : 0)).current;
   const was = useRef(open);
@@ -56,7 +57,7 @@ function useSidebarDock(open: boolean, animate: boolean, arc: boolean): { dock: 
   useEffect(() => {
     if (was.current === open) return;
     was.current = open;
-    const move = dockMove({ open, animated: animate && !reduceMotion() && switchOn("sidebarSlide"), arc, peekOut: peekShown(windowId) });
+    const move = dockMove({ open, animated: animate && !reduceMotion() && switchOn("sidebarSlide"), sidebar, peekOut: peekShown(windowId) });
     if (move === "jump") {
       dock.stopAnimation();
       dock.setValue(open ? 1 : 0);
@@ -66,8 +67,8 @@ function useSidebarDock(open: boolean, animate: boolean, arc: boolean): { dock: 
     }
     if (open) setAway(false);
     setDockMoving(windowId, true);
-    (move === "arcHide"
-      ? Animated.timing(dock, { toValue: 0, duration: ARC_HIDE_MS, easing: curve.enter, useNativeDriver: false })
+    (move === "timing"
+      ? Animated.timing(dock, { toValue: open ? 1 : 0, duration: SIDEBAR_REVEAL_MOTION.duration, easing: easeOutCubic, useNativeDriver: false })
       : Animated.spring(dock, {
           toValue: open ? 1 : 0,
           ...SPRING,
@@ -106,10 +107,9 @@ export function DockedLayout({
   const [open, sidebarWidth, addressBar] = useSidebarDockState(windowId);
   const right = useSidebarSide(windowId) === "right";
   const width = useSidebarUi((u) => u.dragWidth[windowId]) ?? sidebarWidth;
-  const arc = addressBar && !topTabs && switchOn("sidebarSlide");
   const toolbarLights = useToolbarLightsCenter();
   const lights = addressBar && !topTabs ? ARC_LIGHTS_CENTER : toolbarLights;
-  const { dock, away } = useSidebarDock(open, !fullscreen, arc);
+  const { dock, away } = useSidebarDock(open, !fullscreen, !topTabs);
   const frame = useCardFrame();
   const sideInset = right ? inset.right : inset.left;
   const edge = useMemo(
@@ -160,7 +160,6 @@ export function DockedLayout({
           open={open}
           width={width}
           fullscreen={fullscreen}
-          arc={arc}
           lights={lights}
           right={right}
           windowWidth={windowWidth}
@@ -175,7 +174,6 @@ function SidebarDock({
   open,
   width,
   fullscreen,
-  arc,
   lights,
   right,
   windowWidth,
@@ -184,7 +182,6 @@ function SidebarDock({
   open: boolean;
   width: number;
   fullscreen: boolean;
-  arc: boolean;
   lights: readonly [number, number];
   right: boolean;
   windowWidth: number;
@@ -260,7 +257,6 @@ function SidebarDock({
 
   const strip = useRef(false);
   if (!open) strip.current = true;
-  const fade = peeking && !arc;
   const panelOn = useRef(new Animated.Value(0)).current;
   useLayoutEffect(() => panelOn.setValue(peeking ? 1 : 0), [panelOn, peeking]);
   const bleed = peekBleed(peekAt.left);
@@ -302,7 +298,7 @@ function SidebarDock({
           transform: [{ translateX: slideOut }],
         }}
       >
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: fade ? peek.slide : 1, transform: [{ translateX: peeking ? peekIn : 0 }] }]}>
+        <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ translateX: peeking ? peekIn : 0 }] }]}>
           {strip.current && (
             <Animated.View
               pointerEvents="none"

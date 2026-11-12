@@ -1,7 +1,7 @@
 import { escapeCapture } from "./nativeFakes.mjs";
 import { DragController } from "../dragController.ts";
 import { cellKey, tailKey } from "../dragModel.ts";
-import { pinGrid } from "../pinZone.ts";
+import { pinGrid, TILE_GAP } from "../pinZone.ts";
 import { layout } from "../../ui/theme.ts";
 import { animations } from "../../../test-native/reactNative.ts";
 import { entryKey } from "../../../state/sidebar/entryKey.ts";
@@ -105,12 +105,12 @@ export function sceneLayout({ top = 200, x = LEFT, width = WIDTH } = {}) {
         const folder = typeof cell === "object" ? cell : null;
         const column = i % columns;
         const row = Math.floor(i / columns);
-        const frame = frameAt(x + column * (tile + 6), start + row * (TILE + 6), tile, TILE);
+        const frame = frameAt(x + column * (tile + TILE_GAP), start + row * (TILE + TILE_GAP), tile, TILE);
         if (folder) place(entryKey("tileFolder", folder.folderId), { kind: "tile", tabIds: folder.members, section: "tiles", folderId: folder.folderId }, frame);
         else place(entryKey("tab", cell), { kind: "tile", tabIds: [cell], section: "tiles" }, frame);
       });
       const rows = Math.max(1, Math.ceil(cells.length / columns));
-      const h = rows * TILE + (rows - 1) * 6;
+      const h = rows * TILE + (rows - 1) * TILE_GAP;
       place(tailKey("tiles"), { kind: "tail", tabIds: [], section: "tiles" }, frameAt(x, start + h, width, 0));
       y = start + h;
       return { frame: frameAt(x, start, gridWidth, h), api };

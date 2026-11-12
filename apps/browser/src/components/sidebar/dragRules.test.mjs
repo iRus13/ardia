@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+await import("../../test-native/index.ts");
+const { layout } = await import("../ui/theme.ts");
+const { TILE_GAP } = await import("./pinZone.ts");
+const TILE_PITCH = layout.pinnedHeight + TILE_GAP;
 
 const load = (name) => JSON.parse(readFileSync(new URL(`./fixtures/${name}.json`, import.meta.url), "utf8"));
 const zones = load("dragZones");
@@ -83,9 +87,9 @@ test("ties: equal transformed y goes by x then registration, and a pointer on a 
 });
 
 test("tiles: a slot's pitch, no per-cell gap springs, and the grid grows by a row only when one is added", () => {
-  for (const s of moves(tiles["tile sweep"])) if (s.drop.placement?.pinned && s.drop.placement.row === false) assert.equal(s.pitch, 47, s.step);
+  for (const s of moves(tiles["tile sweep"])) if (s.drop.placement?.pinned && s.drop.placement.row === false) assert.equal(s.pitch, TILE_PITCH, s.step);
   for (const s of states(tiles["tile sweep"])) assert.deepEqual(Object.keys(s.gaps).filter((k) => k.startsWith("t:t")), [], s.step);
-  assert.ok(states(tiles["row into tiles"]).some((s) => s.gridGrowth === 47));
+  assert.ok(states(tiles["row into tiles"]).some((s) => s.gridGrowth === TILE_PITCH));
   assert.ok(states(tiles["room clip"]).every((s) => s.gridGrowth <= 10));
   assert.ok(states(tiles["folder tile reorder"]).every((s) => s.gridGrowth <= 0), "a folder takes one cell");
 });
@@ -115,13 +119,12 @@ test("existing folders take a tile or a row at once; a folder tile never folds i
 });
 
 test("folder panel: the first staying member anchors, leaving latches away, an empty panel blocks the rest", () => {
-  assert.equal(at(tiles["panel reorder"], "move 101,184").drop.ontoId, "t2");
+  assert.equal(moves(tiles["panel reorder"])[0].drop.ontoId, "t2");
   const left = states(tiles["panel leave"]);
   const during = left.filter((s) => s.step.startsWith("move"));
   assert.ok(during.slice(1).every((s) => s.folderAway === true));
   assert.ok(during.slice(2).every((s) => s.drop.type !== "folder"), "back over the panel it stays out");
-  assert.equal(at(tiles["empty panel"], "move 100,150").drop.type, "none");
-  assert.equal(at(tiles["empty panel"], "move 100,220").drop.type, "none");
+  assert.deepEqual(moves(tiles["empty panel"]).slice(1, 3).map((state) => state.drop.type), ["none", "none"]);
 });
 
 test("external: counted, no ghost, a placement only on commit, never over an internal drag", () => {

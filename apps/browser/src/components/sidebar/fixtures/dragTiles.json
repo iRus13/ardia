@@ -13,7 +13,7 @@
     "sequence": []
    },
    "gapKey": "t:t4",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -33,7 +33,7 @@
    "gaps": {}
   },
   {
-   "step": "move 14,80.5",
+   "step": "move 14,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -48,13 +48,13 @@
    "pinBefore": "t:t1"
   },
   {
-   "step": "move 54,80.5"
+   "step": "move 54,83.5"
   },
   {
-   "step": "move 76,80.5"
+   "step": "move 76,83.5"
   },
   {
-   "step": "move 116,80.5",
+   "step": "move 116,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -69,10 +69,10 @@
    "pinBefore": "t:t2"
   },
   {
-   "step": "move 138,80.5"
+   "step": "move 138,83.5"
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -87,10 +87,10 @@
    "pinBefore": "t:t4"
   },
   {
-   "step": "move 14,127.5"
+   "step": "move 14,136.5"
   },
   {
-   "step": "move 54,127.5",
+   "step": "move 54,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -105,10 +105,10 @@
    "pinBefore": "t:t5"
   },
   {
-   "step": "move 76,127.5"
+   "step": "move 76,136.5"
   },
   {
-   "step": "move 116,127.5",
+   "step": "move 116,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -218,7 +218,7 @@
  ],
  "empty grid": [
   {
-   "step": "begin t:c 26,205",
+   "step": "begin t:c 26,211",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -250,10 +250,10 @@
    }
   },
   {
-   "step": "move 60,200"
+   "step": "move 60,206"
   },
   {
-   "step": "move 60,120",
+   "step": "move 60,126",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -280,19 +280,19 @@
     "sequence": []
    },
    "gapKey": "tail:tiles",
-   "pitch": 47,
+   "pitch": 53,
    "pins": true,
    "pinCount": 1,
    "pinBefore": "tail:tiles",
    "gaps": {
-    "tail:tiles": 47
+    "tail:tiles": 53
    }
   },
   {
    "step": "move 60,61"
   },
   {
-   "step": "move 60,200",
+   "step": "move 60,206",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -323,12 +323,12 @@
     "sequence": []
    },
    "gapKey": "tail:tiles",
-   "pitch": 47,
+   "pitch": 53,
    "pins": true,
    "pinCount": 1,
    "pinBefore": "tail:tiles",
    "gaps": {
-    "tail:tiles": 47
+    "tail:tiles": 53
    }
   },
   {
@@ -385,7 +385,7 @@
  ],
  "empty panel": [
   {
-   "step": "begin t:c 26,205",
+   "step": "begin t:c 26,211",
    "drop": {
     "type": "none"
    },
@@ -410,7 +410,7 @@
    "gaps": {}
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,306",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -426,7 +426,7 @@
    }
   },
   {
-   "step": "move 100,150",
+   "step": "move 100,156",
    "drop": {
     "type": "none"
    },
@@ -434,10 +434,10 @@
    "gaps": {}
   },
   {
-   "step": "move 100,220"
+   "step": "move 100,226"
   },
   {
-   "step": "move 100,290",
+   "step": "move 100,296",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -556,7 +556,7 @@
     "sequence": []
    },
    "gapKey": "t:t3",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -576,7 +576,7 @@
    "gaps": {}
   },
   {
-   "step": "move 158,80.5",
+   "step": "move 158,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -590,7 +590,7 @@
    "pinBefore": "t:t5"
   },
   {
-   "step": "move 159,80.5"
+   "step": "move 159,83.5"
   },
   {
    "step": "end true",
@@ -708,7 +708,7 @@
     "sequence": []
    },
    "gapKey": "t:t4",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -728,10 +728,10 @@
    "gaps": {}
   },
   {
-   "step": "move 76,80.5"
+   "step": "move 76,83.5"
   },
   {
-   "step": "move 54,127.5",
+   "step": "move 54,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -745,10 +745,10 @@
    "pinBefore": "tail:tiles"
   },
   {
-   "step": "move 158,80.5"
+   "step": "move 158,83.5"
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,312",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -759,7 +759,7 @@
    },
    "gapKey": "tail:list",
    "pitch": 105,
-   "gridGrowth": -47,
+   "gridGrowth": -53,
    "pins": false,
    "pinCount": 0,
    "pinBefore": null,
@@ -768,7 +768,7 @@
    }
   },
   {
-   "step": "move 14,127.5",
+   "step": "move 14,130",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -892,7 +892,7 @@
     "sequence": []
    },
    "gapKey": "t:t2",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -912,14 +912,14 @@
    "gaps": {}
   },
   {
-   "step": "move 141.76,80.5",
+   "step": "move 141.76,83.5",
    "hold": {
     "key": "t:t3",
     "ready": null
    }
   },
   {
-   "step": "move 140.64,80.5",
+   "step": "move 140.64,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -935,14 +935,14 @@
    "pinBefore": "t:t3"
   },
   {
-   "step": "move 152.4,80.5",
+   "step": "move 152.4,83.5",
    "hold": {
     "key": "t:t3",
     "ready": null
    }
   },
   {
-   "step": "move 152.4,80.5",
+   "step": "move 152.4,83.5",
    "drop": {
     "type": "folder",
     "ontoId": "t3"
@@ -954,13 +954,13 @@
    "folderTarget": "t:t3"
   },
   {
-   "step": "move 135.6,80.5"
+   "step": "move 135.6,83.5"
   },
   {
-   "step": "move 133.36,80.5"
+   "step": "move 133.36,83.5"
   },
   {
-   "step": "move 132.24,80.5",
+   "step": "move 132.24,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1082,7 +1082,7 @@
     "sequence": []
    },
    "gapKey": "t:t2",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -1102,17 +1102,17 @@
    "gaps": {}
   },
   {
-   "step": "move 158,80.5",
+   "step": "move 158,83.5",
    "hold": {
     "key": "t:t3",
     "ready": null
    }
   },
   {
-   "step": "move 159,80.5"
+   "step": "move 159,83.5"
   },
   {
-   "step": "move 160,80.5",
+   "step": "move 160,83.5",
    "drop": {
     "type": "folder",
     "ontoId": "t3"
@@ -1124,10 +1124,10 @@
    "folderTarget": "t:t3"
   },
   {
-   "step": "move 180.4,80.5"
+   "step": "move 180.4,83.5"
   },
   {
-   "step": "move 34,127.5",
+   "step": "move 34,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1145,17 +1145,17 @@
    "folderTarget": null
   },
   {
-   "step": "move 96,127.5",
+   "step": "move 96,136.5",
    "hold": {
     "key": "t:t5",
     "ready": null
    }
   },
   {
-   "step": "move 97,127.5"
+   "step": "move 97,136.5"
   },
   {
-   "step": "move 97,127.5",
+   "step": "move 97,136.5",
    "drop": {
     "type": "folder",
     "ontoId": "t5"
@@ -1264,7 +1264,7 @@
  ],
  "panel cancel": [
   {
-   "step": "begin fm:t2 46,167",
+   "step": "begin fm:t2 46,173",
    "drop": {
     "type": "folder",
     "ontoId": "t1",
@@ -1293,7 +1293,7 @@
    }
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,306",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1309,7 +1309,7 @@
    }
   },
   {
-   "step": "move 101,137",
+   "step": "move 101,143",
    "drop": {
     "type": "onto",
     "targetId": "a"
@@ -1412,7 +1412,7 @@
  ],
  "panel leave": [
   {
-   "step": "begin fm:t1 46,130",
+   "step": "begin fm:t1 46,136",
    "drop": {
     "type": "folder",
     "ontoId": "t2",
@@ -1441,7 +1441,7 @@
    }
   },
   {
-   "step": "move 101,184",
+   "step": "move 101,190",
    "drop": {
     "type": "folder",
     "ontoId": "t2",
@@ -1453,7 +1453,7 @@
    }
   },
   {
-   "step": "move 60,330",
+   "step": "move 60,336",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1469,7 +1469,7 @@
    }
   },
   {
-   "step": "move 101,184",
+   "step": "move 101,190",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1484,7 +1484,7 @@
    }
   },
   {
-   "step": "move 101,241",
+   "step": "move 101,247",
    "drop": {
     "type": "onto",
     "targetId": "c"
@@ -1492,7 +1492,7 @@
    "onto": "t:c"
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,306",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1600,7 +1600,7 @@
  ],
  "panel reorder": [
   {
-   "step": "begin fm:t1 46,130",
+   "step": "begin fm:t1 46,136",
    "drop": {
     "type": "folder",
     "ontoId": "t2",
@@ -1629,7 +1629,7 @@
    }
   },
   {
-   "step": "move 101,184",
+   "step": "move 101,190",
    "drop": {
     "type": "folder",
     "ontoId": "t2",
@@ -1641,7 +1641,7 @@
    }
   },
   {
-   "step": "move 101,221",
+   "step": "move 101,227",
    "drop": {
     "type": "folder",
     "ontoId": "t2",
@@ -1653,7 +1653,7 @@
    }
   },
   {
-   "step": "move 101,241"
+   "step": "move 101,247"
   },
   {
    "step": "end true",
@@ -1749,7 +1749,7 @@
  ],
  "room clip": [
   {
-   "step": "begin t:c 26,205",
+   "step": "begin t:c 26,211",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1781,7 +1781,7 @@
    }
   },
   {
-   "step": "move 14,80.5",
+   "step": "move 14,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1793,7 +1793,7 @@
     "sequence": []
    },
    "gapKey": "t:t1",
-   "pitch": 47,
+   "pitch": 53,
    "gridGrowth": 10,
    "pins": true,
    "pinCount": 1,
@@ -1801,7 +1801,7 @@
    "gaps": {}
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1816,7 +1816,7 @@
    "pinBefore": "t:t3"
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,306",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1911,7 +1911,7 @@
  ],
  "row into panel": [
   {
-   "step": "begin t:c 26,205",
+   "step": "begin t:c 26,211",
    "drop": {
     "type": "folder",
     "ontoId": "t1",
@@ -1940,7 +1940,7 @@
    }
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,306",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -1955,7 +1955,7 @@
    }
   },
   {
-   "step": "move 100,125",
+   "step": "move 100,131",
    "drop": {
     "type": "folder",
     "ontoId": "t1",
@@ -1967,7 +1967,7 @@
    }
   },
   {
-   "step": "move 100,175",
+   "step": "move 100,181",
    "drop": {
     "type": "folder",
     "ontoId": "t1",
@@ -1979,7 +1979,7 @@
    }
   },
   {
-   "step": "move 100,222",
+   "step": "move 100,228",
    "drop": {
     "type": "folder",
     "ontoId": "t1",
@@ -1991,7 +1991,7 @@
    }
   },
   {
-   "step": "move 100,300",
+   "step": "move 100,306",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2099,7 +2099,7 @@
  ],
  "row into tiles": [
   {
-   "step": "begin t:c 26,252",
+   "step": "begin t:c 26,264",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2131,10 +2131,10 @@
    }
   },
   {
-   "step": "move 60,260"
+   "step": "move 60,272"
   },
   {
-   "step": "move 60,200",
+   "step": "move 60,212",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2149,7 +2149,7 @@
    }
   },
   {
-   "step": "move 14,80.5",
+   "step": "move 14,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2161,18 +2161,18 @@
     "sequence": []
    },
    "gapKey": "t:t1",
-   "pitch": 47,
-   "gridGrowth": 47,
+   "pitch": 53,
+   "gridGrowth": 53,
    "pins": true,
    "pinCount": 1,
    "pinBefore": "t:t1",
    "gaps": {}
   },
   {
-   "step": "move 54,80.5"
+   "step": "move 54,83.5"
   },
   {
-   "step": "move 138,80.5",
+   "step": "move 138,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2187,7 +2187,7 @@
    "pinBefore": "t:t2"
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2202,7 +2202,7 @@
    "pinBefore": "t:t3"
   },
   {
-   "step": "move 138,127.5",
+   "step": "move 138,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2217,7 +2217,7 @@
    "pinBefore": "t:t5"
   },
   {
-   "step": "move 178,127.5",
+   "step": "move 178,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2232,10 +2232,10 @@
    "pinBefore": "t:t6"
   },
   {
-   "step": "move 150,130"
+   "step": "move 150,136"
   },
   {
-   "step": "move 60,200",
+   "step": "move 60,212",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2357,7 +2357,7 @@
  ],
  "row onto folder": [
   {
-   "step": "begin t:a 26,178",
+   "step": "begin t:a 26,190",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2389,7 +2389,7 @@
    }
   },
   {
-   "step": "move 34,80.5",
+   "step": "move 34,83.5",
    "drop": {
     "type": "folder",
     "ontoId": "t1"
@@ -2404,7 +2404,7 @@
    "folderTarget": "tf:TF9"
   },
   {
-   "step": "move 36,80.5"
+   "step": "move 36,83.5"
   },
   {
    "step": "end true",
@@ -2528,7 +2528,7 @@
     "sequence": []
    },
    "gapKey": "t:t2",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -2548,7 +2548,7 @@
    "gaps": {}
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2563,7 +2563,7 @@
    "pinBefore": "t:t4"
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2578,7 +2578,7 @@
    "pinBefore": "tail:tiles"
   },
   {
-   "step": "move 178,50.5",
+   "step": "move 178,53.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2593,7 +2593,7 @@
    "pinBefore": "t:t5"
   },
   {
-   "step": "move 60,300",
+   "step": "move 60,312",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2715,7 +2715,7 @@
     "sequence": []
    },
    "gapKey": "t:t5",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -2735,7 +2735,7 @@
    "gaps": {}
   },
   {
-   "step": "move 34,80.5",
+   "step": "move 34,83.5",
    "drop": {
     "type": "folder",
     "ontoId": "t1"
@@ -2747,7 +2747,7 @@
    "folderTarget": "tf:TF9"
   },
   {
-   "step": "move 36,80.5"
+   "step": "move 36,83.5"
   },
   {
    "step": "end true",
@@ -2868,7 +2868,7 @@
     "sequence": []
    },
    "gapKey": "t:t2",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -2888,7 +2888,7 @@
    "gaps": {}
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2903,7 +2903,7 @@
    "pinBefore": "t:t4"
   },
   {
-   "step": "move 76,127.5",
+   "step": "move 76,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -2918,10 +2918,10 @@
    "pinBefore": "t:t5"
   },
   {
-   "step": "move 54,127.5"
+   "step": "move 54,136.5"
   },
   {
-   "step": "move 24,80.5",
+   "step": "move 24,83.5",
    "hold": {
     "key": "t:t2",
     "ready": null
@@ -3036,7 +3036,7 @@
     "sequence": []
    },
    "gapKey": "t:t4",
-   "pitch": 47,
+   "pitch": 53,
    "into": null,
    "external": 0,
    "gridGrowth": 0,
@@ -3056,7 +3056,7 @@
    "gaps": {}
   },
   {
-   "step": "move 14,80.5",
+   "step": "move 14,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -3071,13 +3071,13 @@
    "pinBefore": "t:t1"
   },
   {
-   "step": "move 54,80.5"
+   "step": "move 54,83.5"
   },
   {
-   "step": "move 76,80.5"
+   "step": "move 76,83.5"
   },
   {
-   "step": "move 116,80.5",
+   "step": "move 116,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -3092,10 +3092,10 @@
    "pinBefore": "t:t2"
   },
   {
-   "step": "move 138,80.5"
+   "step": "move 138,83.5"
   },
   {
-   "step": "move 178,80.5",
+   "step": "move 178,83.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -3110,10 +3110,10 @@
    "pinBefore": "t:t4"
   },
   {
-   "step": "move 14,127.5"
+   "step": "move 14,136.5"
   },
   {
-   "step": "move 54,127.5",
+   "step": "move 54,136.5",
    "drop": {
     "type": "tabs",
     "placement": {
@@ -3128,10 +3128,10 @@
    "pinBefore": "t:t5"
   },
   {
-   "step": "move 76,127.5"
+   "step": "move 76,136.5"
   },
   {
-   "step": "move 116,127.5",
+   "step": "move 116,136.5",
    "drop": {
     "type": "tabs",
     "placement": {

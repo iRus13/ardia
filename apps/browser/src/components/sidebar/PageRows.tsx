@@ -22,6 +22,7 @@ import { NewTabRow } from "./NewTabRow";
 import { CleanUpUpsell } from "./CleanUpUpsell";
 import { sidebarTokens, TAB_ROW } from "./tokens";
 import { tailKey } from "./dragModel";
+import { ProfileHeading } from "./ProfileHeading";
 
 type PageRowsProps = {
   windowId: string;
@@ -43,6 +44,7 @@ type PageRowsProps = {
 const DOCKED_TILES_GAP = SCROLL_EDGE.gap + SCROLL_EDGE.line + SCROLL_EDGE.inset;
 
 export function PageRows({ windowId, profileId, current, rows, lazy, offScreen, tiles, underDockedTiles, innerWidth, inlineNewTab, controller, geometry, regions, onListHeight }: PageRowsProps) {
+  const addressBar = useAddressBarInSidebar();
   const [captured] = useState(newCapture);
   const { list: all } = useCapturedSidebarEntries(windowId, profileId, captured);
   const [mountedRows, setMountedRows] = useState(() => firstPaintEntriesNow(windowId, profileId, all, lazy));
@@ -80,6 +82,7 @@ export function PageRows({ windowId, profileId, current, rows, lazy, offScreen, 
       >
         {isIncognitoProfile(profileId) ? <IncognitoBadge /> : null}
         {tiles.length ? <PinnedGrid tabs={tiles} innerWidth={innerWidth} flush /> : null}
+        {addressBar && !isIncognitoProfile(profileId) ? <ProfileHeading profileId={profileId} windowId={windowId} fixedTiles={underDockedTiles} scrolledTiles={tiles.length > 0} /> : null}
         <View
           ref={(v) => {
             controller?.regions.set("pinnedGroups", v);

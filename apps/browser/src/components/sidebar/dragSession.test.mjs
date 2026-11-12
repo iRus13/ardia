@@ -30,6 +30,11 @@ function listScene() {
 }
 
 const frameOf = (m, key) => m.L.entries.find((e) => e.key === key).frame;
+const listTailY = (m) => {
+  const last = frameOf(m, entryKey("tab", m.id.d));
+  return last.y + last.h - 4;
+};
+const tileCenterY = (m) => D.centre(frameOf(m, entryKey("tab", m.id.t1))).y;
 
 function ghostLog(ghosts, name) {
   return ghosts.map((g) => (g ? name({ item: g.item.key, count: g.count, width: g.width, height: g.height, landing: !!g.landing, at: g.position.__getValue() }) : null));
@@ -39,14 +44,18 @@ test("external drops: counted, no ghost, a placement only on commit, and a secon
   const m = listScene();
   const { c, ghosts } = mount({ entries: m.L.entries, regions: m.regions });
   const r = recorder(c, m.w);
-  await c.beginExternal(2, 60, 300);
+  await c.beginExternal(2, 60, listTailY(m));
+  assert.equal(D.readDrag(c).drop.placement.beforeId, null, "entering after the last row targets the list tail");
+  assert.equal(D.readDrag(c).gapKey, "tail:list");
   r.snap("enter 2 files");
   r.move(60, frameOf(m, entryKey("tab", m.id.b)).y + 2);
-  r.move(60, 80);
-  await c.beginExternal(3, 60, 80);
+  r.move(60, tileCenterY(m));
+  await c.beginExternal(3, 60, tileCenterY(m));
+  assert.deepEqual(D.readDrag(c).drop.placement, { pinned: true, row: false, beforeId: m.id.t2, tileFolder: null });
   r.snap("enter again with 3");
   r.move(60, frameOf(m, entryKey("tab", m.id.c)).y + 2);
   const placed = c.finishExternal(true);
+  assert.deepEqual(placed, { pinned: false, beforeId: m.id.c });
   r.snap("finished");
   assert.equal(c.finishExternal(true), null, "a second finish has nothing to give");
   traces.check(t, "external", [...r.steps, r.name({ placed, ghosts: ghostLog(ghosts, r.name) })]);
@@ -56,19 +65,19 @@ test("external drops: cancelled, finished before measuring, and never over an in
   const m = listScene();
   const { c, ghosts } = mount({ entries: m.L.entries, regions: m.regions });
   const r = recorder(c, m.w);
-  await c.beginExternal(1, 60, 300);
+  await c.beginExternal(1, 60, listTailY(m));
   r.move(60, frameOf(m, entryKey("tab", m.id.b)).y + 2);
   const cancelled = c.finishExternal(false);
   r.snap("cancelled");
   c.root.held = true;
-  const pending = c.beginExternal(1, 60, 300);
+  const pending = c.beginExternal(1, 60, listTailY(m));
   const early = c.finishExternal(true);
   c.root.release();
   await pending;
   r.snap("finished before measuring");
   const b = frameOf(m, entryKey("tab", m.id.b));
   await c.begin(entryKey("tab", m.id.b), b.x + 20, b.y + 10);
-  await c.beginExternal(1, 60, 300);
+  await c.beginExternal(1, 60, listTailY(m));
   r.snap("external over an internal drag");
   await r.end(false);
   traces.check(t, "external lifecycle", [...r.steps, r.name({ cancelled, early, ghosts: ghostLog(ghosts, r.name) })]);
@@ -113,7 +122,7 @@ test("landing: which drops slide the ghost to its spot and which drop it at once
     ["row onto a row", (m) => entryKey("tab", m.id.a), (m) => D.centre(frameOf(m, entryKey("tab", m.id.c)))],
     ["row into the pinned rows", (m) => entryKey("tab", m.id.c), (m) => ({ x: 60, y: frameOf(m, entryKey("tab", m.id.p1)).y + 3 })],
     ["row into the tiles", (m) => entryKey("tab", m.id.c), (m) => D.centre(frameOf(m, entryKey("tab", m.id.t2)), 0)],
-    ["tile along the grid", (m) => entryKey("tab", m.id.t1), (m) => ({ x: frameOf(m, entryKey("tab", m.id.t2)).x + 70, y: 80 })],
+    ["tile along the grid", (m) => entryKey("tab", m.id.t1), (m) => ({ x: frameOf(m, entryKey("tab", m.id.t2)).x + 70, y: tileCenterY(m) })],
     ["row to its own place", (m) => entryKey("tab", m.id.b), (m) => D.centre(frameOf(m, entryKey("tab", m.id.b)), -12)],
     ["row cancelled", (m) => entryKey("tab", m.id.b), (m) => ({ x: 60, y: frameOf(m, entryKey("tab", m.id.d)).y + 30 }), false],
   ];
@@ -206,7 +215,7 @@ test("a drag turns hover cards and Escape capture off and gives both back, howev
     log.push({ during, after: { shows: await cardShows(), escape: [...escapeCapture] } });
   }
   escapeCapture.length = 0;
-  await c.beginExternal(1, 60, 300);
+  await c.beginExternal(1, 60, listTailY(m));
   const external = { shows: await cardShows(), escape: [...escapeCapture] };
   c.finishExternal(false);
   log.push({ external, after: { shows: await cardShows(), escape: [...escapeCapture] } });

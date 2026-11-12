@@ -1,6 +1,6 @@
 import { useTheme } from "../ui/theme";
 import { duration } from "../ui/motion";
-import { font, ink, shadow, withAlpha, type ShadowLevel } from "../ui/tokens";
+import { font, ink, shadow, space, withAlpha, type ShadowLevel } from "../ui/tokens";
 import type { GroupColor } from "../../state/browser/types";
 import { GROUP_COLORS } from "../../state/groups/tokens";
 
@@ -105,3 +105,13 @@ export function groupSurface(color: GroupColor | null | undefined, tokens: Sideb
 
 export const SIDEBAR_MIN_WIDTH = 160;
 export const SIDEBAR_MAX_WIDTH = 400;
+
+export const SPACE_HEADING = {
+  height: 36,
+  icon: 16,
+  gap: space.ml,
+  afterFixedTiles: space.xxs,
+  afterScrolledTiles: space.m,
+  below: space.s,
+  label: { fontSize: 14 },
+} as const;

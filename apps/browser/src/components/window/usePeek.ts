@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, AppState } from "react-native";
 import { easeOutCubic } from "./dockMotion";
 import { curve, duration } from "../ui/motion";
-import { SIDEBAR_PEEK_MOTION } from "./tokens";
+import { SIDEBAR_REVEAL_MOTION } from "./tokens";
 import { reduceMotion } from "../ui/reduceMotion";
 import { backgroundInstance } from "../../state/app/appSettings";
 
@@ -33,7 +33,7 @@ export function usePeek(
     }
     Animated.timing(slide, {
       toValue: to,
-      duration: fast ? SIDEBAR_PEEK_MOTION.duration : SLIDE_MS,
+      duration: fast ? SIDEBAR_REVEAL_MOTION.duration : SLIDE_MS,
       easing: fast ? easeOutCubic : curve.enter,
       useNativeDriver: true,
     }).start(({ finished }) => finished && done?.());

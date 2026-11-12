@@ -20,7 +20,7 @@ const DIA = [
   [0.0324, 0.316], [0.0657, 0.586], [0.0949, 0.846], [0.1032, 0.973], [0.1365, 1.011], [0.1532, 1.011], [0.1782, 1.005],
 ];
 
-test("the spring follows Dia's measured motion (rms under 4 % of the travel, the recorder's own timing jitter)", () => {
+test("the top tab strip retains its measured spring motion", () => {
   const rms = Math.sqrt(DIA.reduce((sum, [t, x]) => sum + (dm.springAt(t) - x) ** 2, 0) / DIA.length);
   assert.ok(rms < 0.04, `rms ${rms.toFixed(3)}`);
   assert.ok(dm.springAt(0.1) > 0.88);
@@ -29,7 +29,7 @@ test("the spring follows Dia's measured motion (rms under 4 % of the travel, the
   assert.ok(Math.abs(dm.springAt(0.3) - 1) < 0.003);
 });
 
-test("React Native's spring parameters are the same spring", () => {
+test("the top tab strip's React Native spring parameters remain unchanged", () => {
   const { stiffness, damping, mass } = motion.spring(dm.DOCK_SPRING);
   assert.equal(mass, 1);
   const omega = Math.sqrt(stiffness);
@@ -218,21 +218,8 @@ test("hidden or shown is one setting for every window, and survives a quit and r
   stop();
 });
 
-const fitT0 = (points, curve) => {
-  let best = Infinity;
-  for (let t0 = -0.04; t0 <= 0.04; t0 += 0.001) {
-    const err = points.reduce((sum, [t, x]) => sum + (curve(t - t0) - x) ** 2, 0);
-    best = Math.min(best, err);
-  }
-  return Math.sqrt(best / points.length);
-};
-const ARC_HIDE = [
-  [[0, 0], [0.017, 0.452], [0.042, 0.83], [0.059, 0.945], [0.075, 1]],
-  [[0, 0], [0.017, 0.328], [0.034, 0.654], [0.05, 0.853], [0.075, 0.956], [0.092, 1]],
-];
-
 test("sidebar reveal starts immediately and completes a monotonic, non-bouncy move within the Dock's 150 ms", () => {
-  const duration = dm.SIDEBAR_PEEK_MOTION.duration;
+  const duration = dm.SIDEBAR_REVEAL_MOTION.duration;
   assert.ok(duration > 0 && duration <= 150);
   const values = Array.from({ length: duration + 1 }, (_, ms) => dm.easeOutCubic(ms / duration));
   assert.equal(values[0], 0);
@@ -249,13 +236,6 @@ test("sidebar reveal starts immediately and completes a monotonic, non-bouncy mo
   assert.ok(reversed.every((value) => value >= 0 && value <= midway));
 });
 
-test("the docked sidebar keeps its existing quick 100 ms hide", () => {
-  const hide = (t) => (t <= 0 ? 0 : t >= dm.ARC_HIDE_MS / 1000 ? 1 : dm.easeOutCubic(t / (dm.ARC_HIDE_MS / 1000)));
-  for (const motion of ARC_HIDE) {
-    const rms = fitT0(motion, hide);
-    assert.ok(rms < 0.05, `hide rms ${rms.toFixed(3)}`);
-  }
-});
 
 test("the peek stays off the window edge even when the page frame is zero", () => {
   const frameZero = dm.cardFrameOf(PAGE_FRAME.min).peek;
@@ -358,13 +338,14 @@ test("the native left-edge watch spans the hold while peeking, the edge strip du
   assert.equal(dm.edgeStripOverPage(7), true);
 });
 
-test("the dock jumps when it can't animate or Arc docks from an open peek, Arc hides on its ease-out, and otherwise springs", () => {
-  const mv = (o) => dm.dockMove({ open: true, animated: true, arc: false, peekOut: false, ...o });
-  assert.equal(mv({ animated: false }), "jump");
-  assert.equal(mv({ animated: false, open: false, arc: true }), "jump");
-  assert.equal(mv({ arc: true, peekOut: true }), "jump");
-  assert.equal(mv({ arc: true }), "spring");
-  assert.equal(mv({ arc: true, open: false, peekOut: true }), "arcHide");
-  assert.equal(mv({ open: false }), "spring");
-  assert.equal(mv({ peekOut: true }), "spring");
+test("every sidebar docking transition uses the fast timing, preserves Reduce Motion and pins an open peek without a second slide", () => {
+  const mv = (o) => dm.dockMove({ open: true, animated: true, sidebar: true, peekOut: false, ...o });
+  for (const open of [true, false]) {
+    assert.equal(mv({ open }), "timing");
+    assert.equal(mv({ open, animated: false }), "jump", "Reduce Motion never waits on a timing completion");
+    assert.equal(mv({ open, sidebar: false }), "spring", "the top tab strip keeps its existing spring");
+  }
+  assert.equal(mv({ peekOut: true }), "jump", "the sidebar is already visible; pinning it must not send it offscreen first");
+  assert.equal(mv({ open: false, peekOut: true }), "timing");
+  assert.equal(mv({ sidebar: false, peekOut: true }), "spring");
 });

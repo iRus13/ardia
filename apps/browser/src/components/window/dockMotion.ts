@@ -78,9 +78,9 @@ export const edgeWatchWidth = (peeking: boolean, draggingTab: boolean, holdWidth
 
 export const edgeStripOverPage = (inset: number) => inset < PEEK_EDGE_STRIP;
 
-export type DockMove = "jump" | "arcHide" | "spring";
+export type DockMove = "jump" | "timing" | "spring";
 
-export function dockMove(o: { open: boolean; animated: boolean; arc: boolean; peekOut: boolean }): DockMove {
-  if (!o.animated || (o.arc && o.open && o.peekOut)) return "jump";
-  return o.arc && !o.open ? "arcHide" : "spring";
+export function dockMove(o: { open: boolean; animated: boolean; sidebar: boolean; peekOut: boolean }): DockMove {
+  if (!o.animated || (o.sidebar && o.open && o.peekOut)) return "jump";
+  return o.sidebar ? "timing" : "spring";
 }

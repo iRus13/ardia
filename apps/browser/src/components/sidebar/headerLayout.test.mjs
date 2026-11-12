@@ -11,7 +11,7 @@ test("windowed navigation leaves the native traffic lights their own row", () =>
   assert.equal(windowed.height - fullscreen.height, 32);
   for (const header of [windowed, fullscreen]) {
     assert.ok(header.fieldTop >= header.navigationCenter + 16);
-    assert.equal(header.height - header.fieldTop, 34);
+    assert.equal(header.height - header.fieldTop, 36);
   }
 });
 
@@ -22,4 +22,11 @@ test("all navigation actions fit at the narrowest sidebar without overlapping th
     assert.deepEqual(layout.buttons, ["back", "forward", "reload"]);
     assert.ok(layout.step >= 30);
   }
+});
+
+test("a hover-revealed sidebar uses the compact reference header without a spare traffic-light row", () => {
+  assert.deepEqual(sidebarHeaderLayout(false, true), sidebarHeaderLayout(true));
+  assert.equal(sidebarHeaderLayout(false, true).navigationCenter, 24);
+  assert.equal(sidebarHeaderLayout(false, true).fieldTop, 46);
+  assert.equal(sidebarHeaderLayout(false, true).height, 82);
 });
