@@ -41,10 +41,10 @@ export function controlGlassTint(theme: Theme, state: GlassState, tint: number):
   return profileTinted(theme, toHex([r, g, b, alpha * 255]), tint > 0, tint, theme.accent);
 }
 
-export function panelGlassTint(theme: Theme, fill: string, tint: number): string {
+export function panelGlassTint(theme: Theme, fill: string, tint: number, opacity?: number): string {
   const [r, g, b, a] = parseColor(fill);
   const glassy = 1 - Math.min(1, a * PANEL_TINT_SHARE);
-  return profileTinted(theme, toHex([r, g, b, (1 - glassy * PANEL_GLASS_STRENGTH) * 255]), tint > 0);
+  return profileTinted(theme, toHex([r, g, b, (opacity ?? 1 - glassy * PANEL_GLASS_STRENGTH) * 255]), tint > 0);
 }
 
 export const GlassFill = memo(function GlassFill({
@@ -52,6 +52,7 @@ export const GlassFill = memo(function GlassFill({
   border = 0,
   state = "rest",
   panelFill,
+  panelTintOpacity,
   dark,
   theme: shownTheme,
   children,
@@ -60,6 +61,7 @@ export const GlassFill = memo(function GlassFill({
   border?: number;
   state?: GlassState;
   panelFill?: string;
+  panelTintOpacity?: number;
   dark?: boolean;
   theme?: Theme;
   children?: ReactNode;
@@ -74,7 +76,7 @@ export const GlassFill = memo(function GlassFill({
       pointerEvents="none"
       glassStyle={GLASS_STYLE[panelFill ? "panel" : "control"]}
       cornerRadius={radius}
-      tint={panelFill ? panelGlassTint(theme, panelFill, tint) : controlGlassTint(theme, state, tint)}
+      tint={panelFill ? panelGlassTint(theme, panelFill, tint, panelTintOpacity) : controlGlassTint(theme, state, tint)}
       dark={shownDark}
       style={[frame, children ? HOSTED_CONTENT : panelFill ? null : { opacity: CONTROL_GLASS_STRENGTH }]}
     >

@@ -4,7 +4,7 @@ import { Animated, StyleSheet, View } from "react-native";
 import { switchOn } from "../../state/app/switches";
 import { useTheme } from "../ui/theme";
 import { spring, curve } from "../ui/motion";
-import { Panel, reduceMotion, WindowBackdrop, WindowDragRegion } from "../ui";
+import { GlassFill, ink, Panel, reduceMotion, useGlass, WindowBackdrop, WindowDragRegion } from "../ui";
 import { useSidebarSide, useWindowId } from "../../state/browser/hooks";
 import { useSidebarDockState } from "../../state/windows/hooks";
 import { useToolbarLightsCenter } from "../../state/windows/layout";
@@ -14,7 +14,7 @@ import { useSidebarUi } from "../../state/sidebar/sidebarUi";
 import { peekHeld, watchHolds } from "../../state/app/transientUi";
 import { noteSidebarPeek } from "../../state/telemetry/usage";
 import { ProfileSwipe } from "./ProfileSwipe";
-import { ARC_HIDE_MS, DOCK_SPRING, SHADOWS } from "./tokens";
+import { ARC_HIDE_MS, DOCK_SPRING, SHADOWS, SIDEBAR_GLASS } from "./tokens";
 import {
   PEEK_EDGE_STRIP,
   dockMove,
@@ -190,6 +190,7 @@ function SidebarDock({
   windowWidth: number;
 }) {
   const theme = useTheme();
+  const glass = useGlass("panes");
   const windowId = useWindowId();
   const moving = useDockMotion((m) => !!m.moving[windowId]);
   const edgeOver = useRef(false);
@@ -308,8 +309,8 @@ function SidebarDock({
               style={{ position: "absolute", top: 0, bottom: 0, [edgeSide]: -bleed, [right ? "left" : "right"]: 0, opacity: panelOn }}
               onLayout={(e) => setPanelHeight(e.nativeEvent.layout.height)}
             >
-              <Panel fill={theme.windowTint[0]} radius={peekAt.radius} shadow={SHADOWS.sidebarPeek} style={StyleSheet.absoluteFill} />
-              {peeking && (
+              <Panel fill={glass ? ink.clear : theme.windowTint[0]} radius={peekAt.radius} shadow={SHADOWS.sidebarPeek} style={StyleSheet.absoluteFill} />
+              {peeking && !glass && (
                 <View style={[StyleSheet.absoluteFill, { borderRadius: peekAt.radius, overflow: "hidden" }]}>
                   <WindowBackdrop
                     vibrancy
@@ -327,6 +328,24 @@ function SidebarDock({
                 </View>
               )}
             </Animated.View>
+          )}
+          {glass && (
+            <View
+              pointerEvents="none"
+              style={{
+                position: "absolute",
+                top: peeking ? 0 : SIDEBAR_GLASS.inset,
+                bottom: peeking ? 0 : SIDEBAR_GLASS.inset,
+                [edgeSide]: peeking ? -bleed : SIDEBAR_GLASS.inset,
+                [right ? "left" : "right"]: 0,
+              }}
+            >
+              <GlassFill
+                panelFill={theme.panel}
+                panelTintOpacity={SIDEBAR_GLASS.tintOpacity[theme.dark ? "dark" : "light"]}
+                radius={peeking ? peekAt.radius : SIDEBAR_GLASS.radius}
+              />
+            </View>
           )}
           <View style={[{ flex: 1 }, peeking ? { borderRadius: peekAt.radius, overflow: "hidden" } : null]}>{sidebar}</View>
         </Animated.View>

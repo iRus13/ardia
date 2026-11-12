@@ -1,5 +1,5 @@
 import { curve, duration } from "../ui/motion";
-import { font, ink, radius, shadow, type ShadowLevel } from "../ui/tokens";
+import { font, ink, radius, shadow, space, type ShadowLevel } from "../ui/tokens";
 
 const DARK = {
   statusFill: "rgba(40,38,39,0.96)",
@@ -75,3 +75,5 @@ export const ARC_PEEK_OUT_MS = 150;
 export const ARC_HIDE_MS = duration.fast;
 
 export const PEEK_RADIUS = radius.panel;
+
+export const SIDEBAR_GLASS = { tintOpacity: { dark: 0.18, light: 0.12 }, inset: space.s, radius: radius.panel } as const;
