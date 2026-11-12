@@ -86,6 +86,8 @@ export const SUGGESTION = {
 
 export const SELECTED_SUGGESTION_ALPHA = { dark: 0.56, light: 0.3 } as const;
 
+export const COMMAND_GLASS = { tintOpacity: { dark: 0.26, light: 0.2 } } as const;
+
 export const GROW = { duration: 130, easing: curve.outExpo } as const;
 
 export const SCOPE_PULSE = {

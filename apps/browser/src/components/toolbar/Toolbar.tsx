@@ -22,7 +22,7 @@ import { useEasedColor, type ToolbarPalette } from "../ui/toolbarColors";
 import { useSitePalette } from "./useSitePalette";
 import { setToolbarExtensionsWidth } from "../../state/windows/layout";
 import { SIDEBAR_FIELD } from "../sidebar/geometry";
-import { FieldSiteButton, SidebarFieldFill } from "../sidebar/SidebarField";
+import { SidebarFieldFill } from "../sidebar/SidebarField";
 import { showUrlBarMenu } from "../../state/omnibox/paste";
 import { ToolbarExtensions, useToolbarExtensionsWidth } from "../extensions/ToolbarExtensions";
 import { GlassFill, useGlass } from "../ui/Glass";
@@ -43,7 +43,6 @@ export const useToolbarTab = (tabId: string | undefined) => useTab(tabId, useSha
 
 export const urlFieldRight = (inSplit: boolean, extensionsWidth: number, row: ToolbarRow) => (inSplit ? 12 + 2 * (row.button - 2) : 12) + extensionsWidth;
 const LOCK = { left: 7, width: 18, gap: space.xs } as const;
-const SIDEBAR_TEXT_GAP = 6;
 export const urlTextLeft = (insecure: boolean) => (insecure ? LOCK.left + LOCK.width + LOCK.gap : 8);
 export const insecureLevel = (p: PageState) =>
   p.security && (p.security.level === "insecure" || p.security.level === "certificateError") ? p.security.level : null;
@@ -230,7 +229,7 @@ export const ToolbarUrlField = memo(function ToolbarUrlField({ tab, palette, win
   );
 });
 
-export const SidebarUrlField = memo(function SidebarUrlField({ tab, palette, windowId, onFocus, height, progress, accessory }: UrlFieldProps & { height: number; progress: number | null; accessory: ReactNode }) {
+export const SidebarUrlField = memo(function SidebarUrlField({ tab, palette, windowId, onFocus, height, progress }: UrlFieldProps & { height: number; progress: number | null }) {
   const theme = useTheme();
   const field = useUrlField(tab, windowId, onFocus);
   const { insecure, hovered, popover, toggleSiteControls } = field;
@@ -238,28 +237,40 @@ export const SidebarUrlField = memo(function SidebarUrlField({ tab, palette, win
   return (
     <View {...field.hoverProps} style={{ flexDirection: "row", alignItems: "center", height, borderRadius: SIDEBAR_FIELD.radius }}>
       <SidebarFieldFill hovered={hovered} />
-      <FieldSiteButton
-        icon={insecure ? "lock.open.trianglebadge.exclamationmark.fill" : "slider.horizontal.3"}
-        color={insecure === "certificateError" ? theme.destructive : undefined}
-        tooltip={insecure ? "Connection is not secure" : "Site Controls"}
-        active={popover === "siteControls"}
-        palette={palette}
-        onPress={toggleSiteControls}
-      />
-      <ContextMenuArea style={{ flex: 1 }} onContextMenu={() => void showUrlBarMenu(tab)}>
-        <Pressable onPress={field.openPanel} style={{ flex: 1, height, justifyContent: "center", paddingLeft: SIDEBAR_TEXT_GAP }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text numberOfLines={1} ellipsizeMode="head" weight="medium" color={palette.text} style={SHRINK}>
-              {field.host}
-            </Text>
-            <FadeLabel text={field.trail} fontSize={font.body.fontSize} color={palette.secondary} fadeWidth={14} style={{ flex: 1, height: 18, marginLeft: -space.xxs }} />
-          </View>
+      <ContextMenuArea style={{ flex: 1, minWidth: 0 }} onContextMenu={() => void showUrlBarMenu(tab)}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Edit address: ${tab.url}`}
+          onPress={field.openPanel}
+          style={{ flex: 1, minWidth: 0, height, justifyContent: "center", paddingLeft: space.l, paddingRight: space.xs }}
+        >
+          <FadeLabel
+            text={`${field.host}${field.trail}`}
+            fontSize={font.body.fontSize}
+            weight="medium"
+            color={palette.text}
+            fadeWidth={14}
+            style={{ height: 18 }}
+          />
         </Pressable>
       </ContextMenuArea>
       <ToolbarRowContext.Provider value={TOOLBAR_ROWS.regular}>
-        <FieldButtons tab={tab} palette={palette} onFocus={onFocus} popover={popover} toggleSiteControls={toggleSiteControls} accessory={accessory}>
-          {hovered && <PageButton tab={tab} palette={palette} windowId={windowId} />}
-        </FieldButtons>
+        <View style={{ flexDirection: "row", alignItems: "center", flexShrink: 0, paddingRight: space.xs }}>
+          <FieldButtons tab={tab} palette={palette} onFocus={onFocus} popover={popover} toggleSiteControls={toggleSiteControls}>
+            <CopyUrlButton tab={tab} palette={palette} windowId={windowId} />
+          </FieldButtons>
+          <Button
+            variant="icon"
+            toolbar
+            icon={insecure ? "lock.open.trianglebadge.exclamationmark.fill" : "slider.horizontal.3"}
+            color={insecure === "certificateError" ? theme.destructive : undefined}
+            look="field"
+            active={popover === "siteControls"}
+            palette={palette}
+            onPress={toggleSiteControls}
+            tooltip={insecure ? "Connection is not secure — Site Controls" : "Site Controls"}
+          />
+        </View>
       </ToolbarRowContext.Provider>
       {progress !== null ? (
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius: SIDEBAR_FIELD.radius, overflow: "hidden" }]}>

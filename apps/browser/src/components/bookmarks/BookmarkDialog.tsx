@@ -1,6 +1,6 @@
 import { prompt } from "../../state/app/system";
 import { useEffect, useState } from "react";
-import { useSidebarOpen, useSidebarSide, useWindowId } from "../../state/browser/hooks";
+import { useSidebarOpen, useSidebarSide, useWindowFullScreen, useWindowId } from "../../state/browser/hooks";
 import { useSidebarWidth } from "../../state/sidebar/hooks";
 import { Button, Dialog, DialogActions, layout, Text, TextField } from "../ui";
 import { FormField } from "../settings/Form";
@@ -11,7 +11,7 @@ import { FolderPicker } from "./DialogParts";
 import { bookmarkDialog } from "./tokens";
 import { useAddressBarInSidebar } from "../../state/windows/layout";
 import { useToolbarRow } from "../toolbar/useToolbarRow";
-import { SIDEBAR_HEADER_WITH_FIELD } from "../sidebar/geometry";
+import { sidebarHeaderLayout } from "../sidebar/headerLayout";
 import { useCardFrame } from "../window/cardFrame";
 
 export function BookmarkDialog() {
@@ -23,6 +23,7 @@ export function BookmarkDialog() {
 
 function DialogPanel({ state }: { state: BookmarkDialogState }) {
   const addressBar = useAddressBarInSidebar();
+  const sidebarHeader = sidebarHeaderLayout(useWindowFullScreen(state.windowId)).height;
   const sidebarRight = useSidebarSide(state.windowId) === "right";
   const sidebarOpen = useSidebarOpen();
   const sidebarWidth = useSidebarWidth(state.windowId);
@@ -75,8 +76,8 @@ function DialogPanel({ state }: { state: BookmarkDialogState }) {
       place={
         addressBar
           ? sidebarRight
-            ? { top: SIDEBAR_HEADER_WITH_FIELD + bookmarkDialog.belowField, right: layout.sidebarInset }
-            : { top: SIDEBAR_HEADER_WITH_FIELD + bookmarkDialog.belowField, left: layout.sidebarInset }
+            ? { top: sidebarHeader + bookmarkDialog.belowField, right: layout.sidebarInset }
+            : { top: sidebarHeader + bookmarkDialog.belowField, left: layout.sidebarInset }
           : { top: frame.inset + toolbarHeight - bookmarkDialog.belowToolbar, right: cardRight + bookmarkDialog.rightInset }
       }
     >

@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, AppState } from "react-native";
-import { easeInOutCubic } from "./dockMotion";
-import { curve, duration, spring } from "../ui/motion";
-import { ARC_PEEK_OUT_MS, ARC_PEEK_SPRING } from "./tokens";
+import { easeOutCubic } from "./dockMotion";
+import { curve, duration } from "../ui/motion";
+import { SIDEBAR_PEEK_MOTION } from "./tokens";
+import { reduceMotion } from "../ui/reduceMotion";
 import { backgroundInstance } from "../../state/app/appSettings";
 
 const SLIDE_MS = duration.base;
 const HIDE_DELAY_MS = 120;
-const ARC_IN = spring(ARC_PEEK_SPRING);
 const appInFront = () => backgroundInstance || AppState.currentState === "active";
 
 export function usePeek(
   enabled: boolean,
-  arc = false,
+  fast = false,
   held: () => boolean = () => false,
   onSlideOut: () => void = () => {},
   onOpen: (bounce: boolean) => void = () => {},
@@ -24,13 +24,20 @@ export function usePeek(
   const heldBack = useRef(false);
   const out = useRef(false);
   const waitingForFocus = useRef(false);
-  const animate = (to: number, done?: () => void) =>
-    (arc
-      ? to > 0
-        ? Animated.spring(slide, { toValue: to, ...ARC_IN, restDisplacementThreshold: 0.001, restSpeedThreshold: 0.01, useNativeDriver: true })
-        : Animated.timing(slide, { toValue: to, duration: ARC_PEEK_OUT_MS, easing: easeInOutCubic, useNativeDriver: true })
-      : Animated.timing(slide, { toValue: to, duration: SLIDE_MS, easing: curve.enter, useNativeDriver: true })
-    ).start(({ finished }) => finished && done?.());
+  const animate = (to: number, done?: () => void) => {
+    if (reduceMotion()) {
+      slide.stopAnimation();
+      slide.setValue(to);
+      done?.();
+      return;
+    }
+    Animated.timing(slide, {
+      toValue: to,
+      duration: fast ? SIDEBAR_PEEK_MOTION.duration : SLIDE_MS,
+      easing: fast ? easeOutCubic : curve.enter,
+      useNativeDriver: true,
+    }).start(({ finished }) => finished && done?.());
+  };
   const slideOut = () => {
     out.current = false;
     setLeaving(true);
@@ -49,7 +56,8 @@ export function usePeek(
       return;
     }
     waitingForFocus.current = false;
-    if (!out.current) onOpen(live);
+    if (out.current) return;
+    onOpen(live);
     out.current = true;
     setLeaving(false);
     setLive(true);
@@ -61,10 +69,12 @@ export function usePeek(
   const hide = () => {
     clearTimeout(hideTimer.current);
     if (!out.current) return cancelPending();
-    hideTimer.current = setTimeout(() => {
+    const finish = () => {
       heldBack.current = held();
       if (!heldBack.current) slideOut();
-    }, HIDE_DELAY_MS);
+    };
+    if (fast) finish();
+    else hideTimer.current = setTimeout(finish, HIDE_DELAY_MS);
   };
   const recheck = () => {
     if (!heldBack.current || held()) return;

@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, Image, Pressable, View, type ImageSourcePropType } from "react-native";
 import { Button, iconButton, radius, space, Symbol, Text } from "../ui";
 import { useTheme } from "../ui/theme";
 import { iconSymbol } from "../../lib/customIcon";
@@ -14,11 +14,11 @@ const GRID_HEIGHT = ICON_PICKER.rows * ICON_PICKER.cell;
 const GRID_WIDTH = ICON_PICKER.columns * ICON_PICKER.cell;
 const rowHeight = (row: GridRow) => ("title" in row ? ICON_PICKER.header : ICON_PICKER.cell);
 
-function gridRows(sections: GridSection[]): GridRow[] {
+function gridRows(sections: GridSection[], columns: number): GridRow[] {
   const rows: GridRow[] = [];
   for (const { title, icons } of sections) {
     if (title) rows.push({ key: `title:${title}`, title });
-    for (let i = 0; i < icons.length; i += ICON_PICKER.columns) rows.push({ key: `${title ?? ""}:${i}`, icons: icons.slice(i, i + ICON_PICKER.columns) });
+    for (let i = 0; i < icons.length; i += columns) rows.push({ key: `${title ?? ""}:${i}`, icons: icons.slice(i, i + columns) });
   }
   return rows;
 }
@@ -28,14 +28,20 @@ export function IconGrid({
   current,
   onChoose,
   scrollKey,
+  columns = ICON_PICKER.columns,
+  fitContent = false,
+  symbolImages,
 }: {
   sections: GridSection[];
   current: string | null;
   onChoose: (icon: string) => void;
   scrollKey: string;
+  columns?: number;
+  fitContent?: boolean;
+  symbolImages?: Record<string, ImageSourcePropType>;
 }) {
   const list = useRef<FlatList<GridRow>>(null);
-  const rows = useMemo(() => gridRows(sections), [sections]);
+  const rows = useMemo(() => gridRows(sections, columns), [sections, columns]);
   const offsets = useMemo(() => {
     let y = 0;
     return rows.map((row) => {
@@ -74,7 +80,7 @@ export function IconGrid({
         initialNumToRender={ICON_PICKER.rows + 2}
         maxToRenderPerBatch={ICON_PICKER.rows * 2}
         windowSize={5}
-        style={jumps.length ? GRID : GRID_WITHOUT_JUMPS}
+        style={[jumps.length ? GRID : GRID_WITHOUT_JUMPS, { width: columns * ICON_PICKER.cell }, fitContent ? { height: Math.min(GRID_HEIGHT, rows.reduce((sum, row) => sum + rowHeight(row), 0)) } : null]}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => onScroll(e.nativeEvent.contentOffset.y)}
@@ -86,7 +92,7 @@ export function IconGrid({
           ) : (
             <View style={ROW}>
               {item.icons.map((i) => (
-                <Cell key={i.icon} icon={i.icon} label={i.label} selected={sameIcon(i.icon, current)} onPress={press} />
+                <Cell key={i.icon} icon={i.icon} label={i.label} selected={sameIcon(i.icon, current)} onPress={press} symbolImages={symbolImages} />
               ))}
             </View>
           )
@@ -116,10 +122,11 @@ export function IconGrid({
   );
 }
 
-const Cell = memo(function Cell({ icon, label, selected, onPress }: { icon: string; label: string; selected: boolean; onPress: (icon: string) => void }) {
+const Cell = memo(function Cell({ icon, label, selected, onPress, symbolImages }: { icon: string; label: string; selected: boolean; onPress: (icon: string) => void; symbolImages?: Record<string, ImageSourcePropType> }) {
   const theme = useTheme();
   const [hovered, setHovered] = useState(false);
   const symbol = iconSymbol(icon);
+  const source = symbol ? symbolImages?.[symbol] : null;
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected }} onPress={() => onPress(icon)}>
       <View
@@ -127,7 +134,7 @@ const Cell = memo(function Cell({ icon, label, selected, onPress }: { icon: stri
         onMouseLeave={() => setHovered(false)}
         style={[CELL, hovered || selected ? { backgroundColor: iconPickerColors(theme.dark).cellHover } : null]}
       >
-        {symbol ? <Symbol name={symbol} size={ICON_PICKER.symbol} color={theme.icon} style={SYMBOL} /> : <Text style={EMOJI}>{icon}</Text>}
+        {source ? <Image source={source} resizeMode="contain" style={{ width: ICON_PICKER.symbol, height: ICON_PICKER.symbol, tintColor: theme.icon }} /> : symbol ? <Symbol name={symbol} size={ICON_PICKER.symbol} color={theme.icon} style={SYMBOL} /> : <Text style={EMOJI}>{icon}</Text>}
       </View>
     </Pressable>
   );

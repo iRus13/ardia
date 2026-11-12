@@ -33,3 +33,7 @@ Ardia builds on and ships third-party software under its own licenses, including
   the default appearance uses the dark background gradient and dark logo opacity.
   This artwork retains its upstream GPL-3.0 license; it is not covered by the
   Apache-2.0 license applying to Ardia's own source files.
+
+- Phosphor Icons (MIT), copyright (c) 2023 Phosphor Icons, https://github.com/phosphor-icons/core:
+  the planet, campfire, pizza and skull profile silhouettes. Original vector sources and the MIT license
+  are in apps/browser/src/components/profiles/assets.

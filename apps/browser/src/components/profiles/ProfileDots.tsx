@@ -7,42 +7,59 @@ import { layout, useTheme } from "../ui/theme";
 import { useIsIncognito, useProfile, useSettings } from "../../state/browser/hooks";
 import { useProfileOrder, useProfileRecords } from "../../state/profiles/hooks";
 import { useNativePagerPosition, usePagerPages, type PagerPage } from "../../state/windows/profilePager";
-import { ContextMenuArea, useHover } from "../ui";
+import { ContextMenuArea, Symbol, useHover } from "../ui";
 import { TooltipAbove } from "../ui/TooltipAbove";
-import { SIDEBAR_FOOTER_DOWNLOADS } from "../sidebar/geometry";
-import { switcherCellWidth, switcherIcons, SwitcherMark } from "./ProfileIcons";
+import { switcherIcons, SwitcherMark } from "./ProfileIcons";
 import { openProfileItemMenu } from "./profileMenu";
 import { profileSwitcher } from "./tokens";
+import { switcherCellSpan } from "./layout";
+import { requestCreateProfile } from "../../state/profiles/createProfileRequest";
+import { LibraryButton } from "./LibraryButton";
 
 export const PROFILE_DOTS_HEIGHT = profileSwitcher.height;
 const { band: BAND, dotTooltipLift } = profileSwitcher;
 const SIDE_ROOM = layout.sidebarInset;
-const SIDE_ROOM_BESIDE_DOWNLOADS = SIDEBAR_FOOTER_DOWNLOADS.left + SIDEBAR_FOOTER_DOWNLOADS.size + 4;
 
 export function useProfileDotsShown() {
   const incognito = useIsIncognito();
   const count = useProfileOrder((o) => o.length);
-  return !incognito && count > 1;
+  return !incognito && count > 0;
 }
 
-export function ProfileDots({ windowId, width, besideDownloads }: { windowId: string; width: number; besideDownloads: boolean }) {
+export function ProfileDots({ windowId, width }: { windowId: string; width: number }) {
   const ids = useProfileOrder(useShallow((o) => o));
   const saved = useProfileRecords(useShallow((profiles) => ids.map((id) => profiles[id]?.icon ?? null)));
   const shown = useSettings((s) => s.profileSwitcherIcons);
-  const icons = switcherIcons(saved, shown, width - 2 * (besideDownloads ? SIDE_ROOM_BESIDE_DOWNLOADS : SIDE_ROOM));
+  const room = width - 2 * SIDE_ROOM - 2 * profileSwitcher.controlCell;
+  const icons = switcherIcons(saved, shown, room);
+  const cell = switcherCellSpan(room, ids.length);
+  const theme = useTheme();
   const { pages, pager } = usePagerPages(windowId);
   return (
-    <View style={{ height: PROFILE_DOTS_HEIGHT, alignItems: "center" }}>
-      <View style={{ marginTop: (PROFILE_DOTS_HEIGHT - 3 - BAND) / 2, height: BAND, flexDirection: "row" }}>
-        {ids.map((id, i) => (
-          <Dot key={id} id={id} windowId={windowId} icon={icons[i] ?? null} page={pages.find((p) => p.id === id)} pos={pager.pos} />
-        ))}
+    <View style={{ height: PROFILE_DOTS_HEIGHT, paddingHorizontal: SIDE_ROOM, justifyContent: "center" }}>
+      <View style={{ height: BAND, flexDirection: "row", alignItems: "center" }}>
+        <LibraryButton windowId={windowId} />
+        <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+          {ids.map((id, i) => (
+            <Dot key={id} id={id} windowId={windowId} icon={icons[i] ?? null} cell={cell} page={pages.find((p) => p.id === id)} pos={pager.pos} />
+          ))}
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Create a Profile"
+          tooltip="Create a Profile"
+          onPress={() => void requestCreateProfile(windowId).then((id) => id && switchProfile(windowId, id, true))}
+        >
+          <View style={{ width: profileSwitcher.controlCell, height: BAND, alignItems: "center", justifyContent: "center", opacity: profileSwitcher.icons.idle }}>
+            <Symbol name="plus" size={profileSwitcher.icon} weight="medium" color={theme.mark} style={{ width: profileSwitcher.iconCell, height: profileSwitcher.iconCell }} />
+          </View>
+        </Pressable>
       </View>
     </View>
   );
 }
 
-function Dot({ id, windowId, icon, page, pos }: { id: string; windowId: string; icon: string | null; page: PagerPage | undefined; pos: Animated.Value }) {
+function Dot({ id, windowId, icon, cell, page, pos }: { id: string; windowId: string; icon: string | null; cell: number; page: PagerPage | undefined; pos: Animated.Value }) {
   const theme = useTheme();
   useNativePagerPosition(windowId);
   const name = useProfile(id, (p) => p?.name ?? "");
@@ -54,7 +71,6 @@ function Dot({ id, windowId, icon, page, pos }: { id: string; windowId: string; 
   const opacity = page
     ? pos.interpolate({ inputRange: [page.slot - 1, page.slot, page.slot + 1], outputRange: [rest, levels.selected, rest], extrapolate: "clamp" })
     : rest;
-  const cell = switcherCellWidth(icon);
   const mark = useRef<View>(null);
   return (
     <View {...hoverProps} ref={mark}>

@@ -1,6 +1,7 @@
 import { memo, type ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { FadeLabel, font, radius, Surface, type SurfaceProps } from "../ui";
+import { FadeLabel, font, GlassFill, ink, radius, Surface, useGlass, type SurfaceProps } from "../ui";
+import type { GlassState } from "../ui/Glass";
 import { hex, layout, useTheme } from "../ui/theme";
 import { useSelectedTabGlow } from "./rowLook";
 import { SELECTED_ROW_SHADOW_OFFSET, SIDEBAR_TYPE, TAB_ROW } from "./tokens";
@@ -17,6 +18,7 @@ export function SidebarRowSurface({
   cornerRadius = radius.chrome,
   padLeft = TAB_ROW.contentLeft,
   padRight = TAB_ROW.trailing,
+  glassState,
   children,
 }: {
   fill: string;
@@ -26,13 +28,15 @@ export function SidebarRowSurface({
   cornerRadius?: number;
   padLeft?: number;
   padRight?: number;
+  glassState?: GlassState;
   children: SurfaceProps["children"];
 }) {
   const theme = useTheme();
+  const glass = useGlass() && glassState !== undefined;
   const glow = useSelectedTabGlow();
   return (
     <Surface
-      fill={hex(fill)}
+      fill={glass ? ink.clear : hex(fill)}
       cornerRadius={cornerRadius}
       borderWidth={border}
       borderColor={stroke === undefined ? undefined : hex(stroke)}
@@ -43,6 +47,7 @@ export function SidebarRowSurface({
       shadowOffset={SELECTED_ROW_SHADOW_OFFSET}
       style={{ height: layout.rowHeight, flexDirection: "row", alignItems: "center", paddingLeft: padLeft, paddingRight: padRight }}
     >
+      {glass ? <GlassFill radius={cornerRadius} state={glassState} /> : null}
       {children}
     </Surface>
   );

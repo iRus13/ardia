@@ -99,6 +99,7 @@ export const TabRow = memo(function TabRow({
       {({ pressed }) => (
           <SidebarRowSurface
             fill={onto || (!active && pressed) ? theme.tabPressed : fill}
+            glassState={onto || (selected && !active) ? undefined : active ? "active" : pressed ? "pressed" : hovered ? "lit" : undefined}
             selected={active}
             border={border}
             stroke={selected && !active ? tokens.multiSelectedStroke : undefined}
@@ -240,6 +241,7 @@ export const SplitRowItem = memo(function SplitRowItem({
       <View {...moved} ref={movedRef} {...hoverProps} style={moved.style as object}>
         <SidebarRowSurface
           fill={active ? theme.tabSelected : hovered ? theme.tabHover : ink.clear}
+          glassState={active ? "active" : hovered ? "lit" : undefined}
           selected={active}
           border={splitBorder}
           padLeft={space.xs - splitBorder}

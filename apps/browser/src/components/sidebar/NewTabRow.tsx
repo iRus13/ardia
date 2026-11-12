@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { Animated, Pressable, View, type LayoutChangeEvent } from "react-native";
-import { Button, ContextMenuArea, radius, space, Symbol, Text, useHover } from "../ui";
+import { Button, ContextMenuArea, GlassFill, radius, space, Symbol, Text, useGlass, useHover } from "../ui";
 import { layout, useTheme } from "../ui/theme";
 import { HoverSlot } from "../ui/HoverSlot";
 import { newTab } from "../../state/tabs/actions";
@@ -24,6 +24,7 @@ const MEASURE_OFFSCREEN = { position: "absolute", width: 1000, height: 0, overfl
 
 export const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip = null }: { windowId: string; shift?: Animated.Value | null; clip?: ClipSource | null }) {
   const theme = useTheme();
+  const glass = useGlass();
   const tokens = useSidebarTokens();
   const cleaned = useCleanedCount(windowId);
   const { hovered, hoverProps } = useHover();
@@ -68,11 +69,12 @@ export const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip 
                   alignItems: "center",
                   paddingLeft: TAB_ROW.contentLeft,
                   paddingRight: BUTTONS_ROOM,
-                  backgroundColor: pressed ? theme.tabPressed : hovered ? theme.tabHover : undefined,
+                  backgroundColor: glass ? undefined : pressed ? theme.tabPressed : hovered ? theme.tabHover : undefined,
                 },
                 moved.style as object,
               ]}
             >
+              {glass && (pressed || hovered) ? <GlassFill radius={radius.chrome} state={pressed ? "pressed" : "lit"} /> : null}
               <Symbol name="plus" size={13} weight="medium" color={tokens.newTabIcon} style={{ width: 16, height: 16 }} />
               <SidebarRowLabel text="New Tab" color={tokens.newTabLabel} />
             </View>

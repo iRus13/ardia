@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import { Animated, Pressable, StyleSheet, View, type LayoutChangeEvent } from "react-native";
+import { Animated, Pressable, StyleSheet, View, type ImageSourcePropType, type LayoutChangeEvent } from "react-native";
 import { Button, Panel, radius, SearchField, space, usePopoverMotion, usePopoverMotionStyle } from "../ui";
 import { useTheme } from "../ui/theme";
 import { iconSymbol, symbolIcon } from "../../lib/customIcon";
 import { emojiSections, matchesTerms, searchEmoji, searchTerms } from "../../lib/emoji";
 import { IconGrid, type GridSection } from "./IconGrid";
-import { ICON_PICKER, ICON_PICKER_SHADOW, ICON_PICKER_WIDTH } from "./tokens";
+import { ICON_PICKER, ICON_PICKER_SHADOW, ICON_PICKER_WIDTH, iconPickerWidth } from "./tokens";
 
 export type PickerSymbol = { name: string; title?: string };
 export type PickerAction = { title: string; icon?: string; primary?: boolean; onPress: () => void };
@@ -50,6 +50,10 @@ function pickerSections(tab: Tab, terms: string[], symbols: PickerSymbol[]): Gri
 
 type PanelProps = {
   current: string | null;
+  columns?: number;
+  initialTab?: Tab;
+  fitContent?: boolean;
+  symbolImages?: Record<string, ImageSourcePropType>;
   symbols: PickerSymbol[];
   actions: PickerAction[];
   onChoose: (icon: string) => void;
@@ -58,9 +62,9 @@ type PanelProps = {
   onSize: (height: number) => void;
 };
 
-function IconPickerPanel({ current, symbols, actions, onChoose, onClose, place, onSize }: PanelProps) {
+function IconPickerPanel({ current, symbols, actions, onChoose, onClose, place, onSize, columns = ICON_PICKER.columns, initialTab, fitContent, symbolImages }: PanelProps) {
   const theme = useTheme();
-  const [tab, setTab] = useState<Tab>(iconSymbol(current) ? "symbols" : "emoji");
+  const [tab, setTab] = useState<Tab>(initialTab ?? (iconSymbol(current) ? "symbols" : "emoji"));
   const [query, setQuery] = useState("");
   const terms = useMemo(() => searchTerms(query), [query]);
   const sections = useMemo(() => pickerSections(tab, terms, symbols), [tab, terms, symbols]);
@@ -71,10 +75,10 @@ function IconPickerPanel({ current, symbols, actions, onChoose, onClose, place, 
   return (
     <Animated.View
       pointerEvents={place ? "auto" : "none"}
-      style={[{ position: "absolute", top: place?.top ?? 0, left: place?.left ?? 0, width: ICON_PICKER_WIDTH }, place ? motion : HIDDEN]}
+      style={[{ position: "absolute", top: place?.top ?? 0, left: place?.left ?? 0, width: iconPickerWidth(columns) }, place ? motion : HIDDEN]}
       onLayout={onLayout}
     >
-      <Panel fill={theme.panel} radius={radius.sheet} border={theme.panelBorder} shadow={ICON_PICKER_SHADOW} style={PANEL}>
+      <Panel glass fill={theme.panel} radius={radius.sheet} border={theme.panelBorder} shadow={ICON_PICKER_SHADOW} style={PANEL}>
         <View style={TOP_ROW}>
           <View style={FILL}>
             <SearchField
@@ -95,7 +99,7 @@ function IconPickerPanel({ current, symbols, actions, onChoose, onClose, place, 
             <Button key={t.tab} variant="icon" icon={t.icon} active={tab === t.tab} tooltip={t.title} onPress={() => setTab(t.tab)} />
           ))}
         </View>
-        <IconGrid sections={sections} current={current} onChoose={onChoose} scrollKey={`${tab}|${terms.join(" ")}`} />
+        <IconGrid symbolImages={symbolImages} columns={columns} fitContent={fitContent} sections={sections} current={current} onChoose={onChoose} scrollKey={`${tab}|${terms.join(" ")}`} />
         {actions.length ? (
           <View style={TOP_ROW}>
             {actions.map((a) => (
@@ -133,7 +137,7 @@ export function IconPickerLayer({
 }
 
 export const nearAnchor =
-  (anchor: Anchor | null) =>
+  (anchor: Anchor | null, columns: number = ICON_PICKER.columns) =>
   (height: number, room: Room): PickerPlace => {
     const { anchorGap, windowMargin } = ICON_PICKER;
     const box = anchor ?? { x: room.width / 2, y: windowMargin, width: 0, height: 0 };
@@ -141,11 +145,11 @@ export const nearAnchor =
     const above = box.y - anchorGap - height;
     const upward = below + height > room.height - windowMargin && above >= windowMargin;
     const top = upward ? above : Math.max(windowMargin, Math.min(below, room.height - windowMargin - height));
-    return { top, left: clampLeft(box.x + box.width / 2 - ICON_PICKER_WIDTH / 2, room), upward };
+    return { top, left: clampLeft(box.x + box.width / 2 - iconPickerWidth(columns) / 2, room, iconPickerWidth(columns)), upward };
   };
 
-export const clampLeft = (left: number, room: Room) =>
-  Math.max(ICON_PICKER.windowMargin, Math.min(left, room.width - ICON_PICKER.windowMargin - ICON_PICKER_WIDTH));
+export const clampLeft = (left: number, room: Room, width = ICON_PICKER_WIDTH) =>
+  Math.max(ICON_PICKER.windowMargin, Math.min(left, room.width - ICON_PICKER.windowMargin - width));
 
 export const clampTop = (top: number, height: number, room: Room) =>
   Math.max(ICON_PICKER.windowMargin, Math.min(top, room.height - ICON_PICKER.windowMargin - height));

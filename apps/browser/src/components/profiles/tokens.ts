@@ -13,9 +13,16 @@ export const profileSwitcher = {
   band: 28,
   dotCell: 12,
   dot: 6,
-  iconCell: 26,
-  icon: 11,
+  iconCell: 28,
+  icon: 14,
+  maxCell: 34,
+  minIconCell: 20,
+  controlCell: 28,
+  libraryIcon: 16,
+  librarySparkle: 9,
   dotTooltipLift: 18.25,
   dots: { selected: 0.85, hovered: 0.4, idle: 0.2 },
   icons: { selected: 1, hovered: 0.7, idle: 0.42 },
 } as const;
+
+export const PROFILE_PICKER_COLUMNS = 8;

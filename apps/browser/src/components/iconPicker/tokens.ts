@@ -14,7 +14,8 @@ export const ICON_PICKER = {
   sidebarGap: 6,
 } as const;
 
-export const ICON_PICKER_WIDTH = ICON_PICKER.columns * ICON_PICKER.cell + ICON_PICKER.pad * 2 + hairline.panel * 2;
+export const iconPickerWidth = (columns: number = ICON_PICKER.columns) => columns * ICON_PICKER.cell + ICON_PICKER.pad * 2 + hairline.panel * 2;
+export const ICON_PICKER_WIDTH = iconPickerWidth();
 
 export const ICON_PICKER_SHADOW = shadow.sheet;
 

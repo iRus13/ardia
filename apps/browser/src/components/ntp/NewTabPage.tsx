@@ -1,4 +1,4 @@
-import { PowerUp, hex, ink, reduceMotion, springs, Surface, useTheme } from "../ui";
+import { GlassFill, PowerUp, hex, ink, reduceMotion, springs, Surface, useGlass, useTheme } from "../ui";
 import { TOOLBAR_ROWS } from "../../lib/toolbarRow";
 import { useEffect, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
@@ -9,6 +9,7 @@ import { IncognitoHeading } from "./IncognitoHeading";
 import { DIA_OFFSET, MARK_ABOVE_BAR, newTabBarTop } from "./newTabLayout";
 import { useOnboarding } from "../../state/onboarding/onboarding";
 import { Omnibox } from "../omnibox/Omnibox";
+import { COMMAND_GLASS } from "../omnibox/tokens";
 import { NTP_BAR } from "./tokens";
 
 const BAR_HEIGHT = 112;
@@ -49,6 +50,7 @@ export function barWidth(viewWidth: number) {
 
 export function NewTabPage({ tabId, toolbar = true }: { tabId: string; toolbar?: boolean }) {
   const theme = useTheme();
+  const glass = useGlass("panes");
   const windowId = useWindowId();
   const incognito = useWindow(windowId, (w) => w?.kind === "private");
   const onboarding = useOnboarding((s) => s.windowId === windowId);
@@ -141,7 +143,8 @@ export function NewTabPage({ tabId, toolbar = true }: { tabId: string; toolbar?:
             shadowOffset={level.offset}
           />
         ))}
-        <Surface fill={hex(theme.ntpBarSolid)} cornerRadius={NTP_BAR.radius} style={{ padding: NTP_BAR.contentInset }}>
+        <Surface fill={glass ? ink.clear : hex(theme.ntpBarSolid)} cornerRadius={NTP_BAR.radius} style={{ padding: NTP_BAR.contentInset }}>
+          {glass ? <GlassFill radius={NTP_BAR.radius} panelFill={theme.ntpBarSolid} panelTintOpacity={COMMAND_GLASS.tintOpacity[theme.dark ? "dark" : "light"]} /> : null}
           {onboarding ? <View style={{ height: BAR_HEIGHT - 2 * NTP_BAR.contentInset }} /> : <Omnibox variant="hero" tabId={tabId} />}
           <View pointerEvents="none" style={{ ...StyleSheet.absoluteFillObject, borderRadius: NTP_BAR.radius, borderWidth: NTP_BAR.border, borderColor: theme.ntpBarBorder }} />
         </Surface>

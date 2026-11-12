@@ -3,8 +3,10 @@ import { Pressable, View } from "react-native";
 import { profileNameColor, useTheme } from "../ui/theme";
 import { useIsIncognito, useProfiles, useWindowId, useWindowProfile } from "../../state/browser/hooks";
 import { setMeasuredWidth, useMeasuredWidth } from "../../state/windows/measuredWidths";
-import { ContextMenuArea, radius, Symbol, Text, useHover } from "../ui";
+import { ContextMenuArea, radius, Text, useHover } from "../ui";
 import { openProfileItemMenu } from "./profileMenu";
+import { iconSymbol } from "../../lib/customIcon";
+import { ProfileSymbol } from "./ProfileSymbol";
 import { openProfileMenu } from "../../state/browser/actions";
 
 const PAD = 9;
@@ -25,7 +27,7 @@ function useIndicator(room: number) {
   const showName = !!textWidth && (textWidth <= nameRoom || nameRoom >= MIN_CUT_NAME);
   const width = !shown ? 0 : showName ? Math.min(room, textWidth + 2 * PAD) : ICON_WIDTH;
   const color = incognito ? theme.textPrimary : profileNameColor(profile, theme.dark);
-  return { incognito, title, textWidth, shown, showName, width, color, profileId: profile.id };
+  return { incognito, title, textWidth, shown, showName, width, color, icon: profile.icon, profileId: profile.id };
 }
 
 export const useProfileIndicatorWidth = (room: number) => useIndicator(room).width;
@@ -34,7 +36,7 @@ export function ProfileIndicator({ room }: { room: number }) {
   const theme = useTheme();
   const windowId = useWindowId();
   const { hovered, hoverProps } = useHover();
-  const { incognito, title, textWidth, shown, showName, width, color, profileId } = useIndicator(room);
+  const { incognito, title, textWidth, shown, showName, width, color, icon, profileId } = useIndicator(room);
   const indicator = useRef<View>(null);
   if (!shown) return null;
 
@@ -70,7 +72,7 @@ export function ProfileIndicator({ room }: { room: number }) {
                   {title}
                 </Text>
               ) : textWidth ? (
-                <Symbol name="person.fill" size={14} weight="semibold" color={color} style={{ width: 16, height: 16 }} />
+                <ProfileSymbol name={iconSymbol(icon) ?? "person.fill"} size={14} color={color} style={{ width: 16, height: 16 }} />
               ) : null}
             </View>
           )}

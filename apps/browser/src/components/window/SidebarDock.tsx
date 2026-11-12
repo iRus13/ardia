@@ -194,7 +194,7 @@ function SidebarDock({
   const windowId = useWindowId();
   const moving = useDockMotion((m) => !!m.moving[windowId]);
   const edgeOver = useRef(false);
-  const peek = usePeek(!open && !moving && !fullscreen, arc, () => edgeOver.current || peekHeld(windowId), () => dismissHoverIn(windowId), noteSidebarPeek);
+  const peek = usePeek(!open && !moving && !fullscreen, true, () => edgeOver.current || peekHeld(windowId), () => dismissHoverIn(windowId), noteSidebarPeek);
   const latestPeek = useRef(peek);
   latestPeek.current = peek;
   useEffect(() => (peek.live ? watchHolds("peek", () => latestPeek.current.recheck()) : undefined), [peek.live]);

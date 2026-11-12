@@ -218,7 +218,6 @@ test("hidden or shown is one setting for every window, and survives a quit and r
   stop();
 });
 
-const springAt = (t, s) => dm.springAt(t, s);
 const fitT0 = (points, curve) => {
   let best = Infinity;
   for (let t0 = -0.04; t0 <= 0.04; t0 += 0.001) {
@@ -227,34 +226,35 @@ const fitT0 = (points, curve) => {
   }
   return Math.sqrt(best / points.length);
 };
-const ARC_PEEK_IN = [
-  [[0, 0.219], [0.025, 0.473], [0.041, 0.686], [0.066, 0.931], [0.083, 0.983], [0.1, 1.006], [0.116, 1.015], [0.133, 1.015], [0.15, 1.013], [0.166, 1.009], [0.183, 1.004], [0.2, 1.002], [0.216, 1]],
-  [[0, 0.09], [0.034, 0.462], [0.042, 0.677], [0.059, 0.832], [0.092, 0.959], [0.109, 0.998], [0.117, 1.013], [0.134, 1.015], [0.15, 1.013], [0.184, 1.006], [0.2, 1.004], [0.217, 1.002], [0.234, 1]],
-  [[0, 0.254], [0.017, 0.503], [0.033, 0.71], [0.05, 0.903], [0.067, 0.968], [0.083, 1], [0.1, 1.013], [0.117, 1.015], [0.133, 1.013], [0.158, 1.009], [0.175, 1.004], [0.2, 1.002], [0.217, 1]],
-];
 const ARC_HIDE = [
   [[0, 0], [0.017, 0.452], [0.042, 0.83], [0.059, 0.945], [0.075, 1]],
   [[0, 0], [0.017, 0.328], [0.034, 0.654], [0.05, 0.853], [0.075, 0.956], [0.092, 1]],
 ];
 
-test("Arc's peek slides in on its measured spring and leaves on its ease-in-out; its hide is a 100 ms ease-out", () => {
-  for (const motion of ARC_PEEK_IN) {
-    const rms = fitT0(motion, (t) => springAt(t, dm.ARC_PEEK_SPRING));
-    assert.ok(rms < 0.04, `peek in rms ${rms.toFixed(3)}`);
+test("sidebar reveal starts immediately and completes a monotonic, non-bouncy move within the Dock's 150 ms", () => {
+  const duration = dm.SIDEBAR_PEEK_MOTION.duration;
+  assert.ok(duration > 0 && duration <= 150);
+  const values = Array.from({ length: duration + 1 }, (_, ms) => dm.easeOutCubic(ms / duration));
+  assert.equal(values[0], 0);
+  assert.equal(values.at(-1), 1);
+  assert.ok(values[1] > 0, "the first frame advances without a dwell");
+  assert.ok(values[Math.floor(duration / 2)] > 0.85, "the panel is nearly open halfway through");
+  for (let i = 1; i < values.length; i++) {
+    assert.ok(values[i] >= values[i - 1] && values[i] <= 1, `no reversal or overshoot at ${i} ms`);
   }
+  const midway = values[Math.floor(duration / 2)];
+  const reversed = values.map((progress) => midway * (1 - progress));
+  assert.equal(reversed[0], midway, "a reversed timing starts at the in-flight position");
+  assert.equal(reversed.at(-1), 0);
+  assert.ok(reversed.every((value) => value >= 0 && value <= midway));
+});
+
+test("the docked sidebar keeps its existing quick 100 ms hide", () => {
   const hide = (t) => (t <= 0 ? 0 : t >= dm.ARC_HIDE_MS / 1000 ? 1 : dm.easeOutCubic(t / (dm.ARC_HIDE_MS / 1000)));
   for (const motion of ARC_HIDE) {
     const rms = fitT0(motion, hide);
     assert.ok(rms < 0.05, `hide rms ${rms.toFixed(3)}`);
   }
-  const dia = Math.max(...ARC_HIDE.map((m) => fitT0(m, (t) => dm.springAt(t))));
-  assert.ok(dia > 0.06, `Dia's spring against Arc's hide: rms ${dia.toFixed(3)}`);
-  assert.equal(dm.easeInOutCubic(0), 0);
-  assert.equal(dm.easeInOutCubic(0.5), 0.5);
-  assert.equal(dm.easeInOutCubic(1), 1);
-  const peak = Math.max(...Array.from({ length: 400 }, (_, i) => springAt(i / 1000, dm.ARC_PEEK_SPRING)));
-  const arcPeak = Math.max(...ARC_PEEK_IN.flat().map(([, x]) => x));
-  assert.ok(Math.abs(peak - arcPeak) < 0.002, `the panel's overshoot ${peak}, Arc's ${arcPeak}`);
 });
 
 test("the peek stays off the window edge even when the page frame is zero", () => {

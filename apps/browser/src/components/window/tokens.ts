@@ -70,8 +70,7 @@ export const SWIPE_PILL_SPRING = { response: 0.27, damping: 0.9 } as const;
 
 export const DOCK_SPRING = { response: 0.215, damping: 0.79 } as const;
 
-export const ARC_PEEK_SPRING = { response: 0.18, damping: 0.8 } as const;
-export const ARC_PEEK_OUT_MS = 150;
+export const SIDEBAR_PEEK_MOTION = { duration: 150 } as const;
 export const ARC_HIDE_MS = duration.fast;
 
 export const PEEK_RADIUS = radius.panel;

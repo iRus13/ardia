@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import { Animated, Pressable, View } from "react-native";
 import { useTheme } from "../ui/theme";
-import { ContextMenuArea, Divider, space, Symbol, Text, useHover } from "../ui";
+import { capsule, ContextMenuArea, Divider, GlassFill, space, Symbol, Text, useGlass, useHover } from "../ui";
 import { TAB_ROW } from "./tokens";
 import { HoverSlot } from "../ui/HoverSlot";
 import { closeAllTabs } from "../../state/sidebar/clearTabs";
@@ -65,6 +65,7 @@ export const ClearDivider = memo(function ClearDivider({ windowId, profileId, li
 
 function FoldButton({ pinned, onPress }: { pinned: PinnedFold; onPress: () => void }) {
   const theme = useTheme();
+  const glass = useGlass();
   const { hovered, hoverProps } = useHover();
   const label = pinned.collapsed ? PINNED_FOLD_TITLES.expand : PINNED_FOLD_TITLES.collapse;
   const rotate = pinned.open.interpolate({ inputRange: [0, 1], outputRange: ["-90deg", "0deg"] });
@@ -75,6 +76,7 @@ function FoldButton({ pinned, onPress }: { pinned: PinnedFold; onPress: () => vo
           const color = pressed ? theme.textSecondary : hovered ? theme.textPrimary : theme.textTertiary;
           return (
             <View style={{ height: CLEAR_DIVIDER_HEIGHT, flexDirection: "row", alignItems: "center", paddingRight: space.m }}>
+              {glass && (pressed || hovered) ? <GlassFill radius={capsule(CLEAR_DIVIDER_HEIGHT)} state={pressed ? "pressed" : "lit"} /> : null}
               <Animated.View style={{ width: 10, height: 10, marginRight: space.xs, alignItems: "center", justifyContent: "center", transform: [{ rotate }] }}>
                 <Symbol name="chevron.down" size={8} weight="semibold" color={color} style={{ width: 10, height: 10 }} />
               </Animated.View>
@@ -91,6 +93,7 @@ function FoldButton({ pinned, onPress }: { pinned: PinnedFold; onPress: () => vo
 
 function DividerButton({ title, symbol, iconWidth, label, onPress }: { title: string; symbol: string; iconWidth: number; label: string; onPress: () => void }) {
   const theme = useTheme();
+  const glass = useGlass();
   const { hovered, hoverProps } = useHover();
   return (
     <View {...hoverProps}>
@@ -99,6 +102,7 @@ function DividerButton({ title, symbol, iconWidth, label, onPress }: { title: st
           const color = pressed ? theme.textSecondary : hovered ? theme.textPrimary : theme.textTertiary;
           return (
             <View style={{ height: CLEAR_DIVIDER_HEIGHT, flexDirection: "row", alignItems: "center", paddingLeft: space.m }}>
+              {glass && (pressed || hovered) ? <GlassFill radius={capsule(CLEAR_DIVIDER_HEIGHT)} state={pressed ? "pressed" : "lit"} /> : null}
               <Symbol name={symbol} size={9} weight="semibold" color={color} style={{ width: iconWidth, height: 11, marginRight: space.xs }} />
               <Text size="tiny" weight="medium" color={color}>
                 {title}

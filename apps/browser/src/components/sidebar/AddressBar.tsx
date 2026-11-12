@@ -7,7 +7,6 @@ import { toggleSidebar } from "../../state/windows/actions";
 import { openEmptySidebarField } from "../../state/omnibox/barState";
 import { isAddressBarInSidebar } from "../../state/sidebar/current";
 import { usePageProgress } from "../../state/tabs/pageProgress";
-import { extensionsFitting, ToolbarExtensions, useToolbarExtensionsWidth } from "../extensions/ToolbarExtensions";
 import { useHistoryAvailability } from "../../state/tabs/navigation";
 import { toolbarPalette, type ToolbarPalette } from "../ui/toolbarColors";
 import { Button, type ButtonHit, FadeLabel, font, radius, space, ToolbarRowContext, useHover } from "../ui";
@@ -18,12 +17,11 @@ import { SidebarFieldFill } from "./SidebarField";
 import { SidebarUrlField, useToolbarTab } from "../toolbar/Toolbar";
 import { HistoryButton, ReloadButton } from "../toolbar/NavButtons";
 import { GLYPH } from "../toolbar/tokens";
-import { HEADER_TOOLS, headerToggleX, navButtonsFitting, type HeaderButton } from "../window/dockMotion";
-import { ARC_LIGHTS_CENTER } from "../../state/windows/dockMotion";
+import { HEADER_TOOLS, navButtonsFitting, type HeaderButton } from "../window/dockMotion";
+import { sidebarHeaderLayout } from "./headerLayout";
 
 const BUTTON = layout.toolbarButton;
 const { edge: EDGE } = HEADER_TOOLS;
-const LIGHTS_Y = ARC_LIGHTS_CENTER[1];
 const PLATE = 32;
 const PLATE_RADIUS = radius.toolbar;
 
@@ -34,7 +32,8 @@ export function SidebarHeaderTools({ width }: { width: number }) {
   const toggle = useSettings((st) => st.showSidebarButton !== false);
   const right = useSidebarSide(windowId) === "right";
   const sidebarHint = useShortcutHint("toggleSidebar");
-  const toggleX = headerToggleX(useWindowFullScreen(windowId));
+  const header = sidebarHeaderLayout(useWindowFullScreen(windowId));
+  const toggleX = header.toggleCenter;
   const { buttons, step } = navButtonsFitting(width, BUTTON, toggle, toggleX);
   const shown = tab ? buttons : [];
   const last = width - EDGE - BUTTON / 2;
@@ -42,7 +41,7 @@ export function SidebarHeaderTools({ width }: { width: number }) {
   const at = toggle ? [toggleX, ...centres] : centres;
   const plate = Math.min(PLATE, step);
   const place = (center: number) => ({
-    style: { position: "absolute" as const, top: LIGHTS_Y - plate / 2, left: center - plate / 2 },
+    style: { position: "absolute" as const, top: header.navigationCenter - plate / 2, left: center - plate / 2 },
     hit: { width: plate, height: plate, plateX: 0, plateY: 0, box: plate, radius: PLATE_RADIUS },
   });
   return (
@@ -99,10 +98,11 @@ function NavigationButtons({
   );
 }
 
-export function SidebarAddressRow({ width }: { width: number }) {
+export function SidebarAddressRow() {
   const windowId = useWindowId();
   const tab = useToolbarTab(useActiveTabId());
   const field = useRef<View>(null);
+  const header = sidebarHeaderLayout(useWindowFullScreen(windowId));
   const anchor = () =>
     field.current?.measureInWindow((x, y, width, height) => {
       if (width && isAddressBarInSidebar(windowId)) setUrlAnchor(windowId, { left: x, top: y, width, sidebar: { height } });
@@ -112,24 +112,20 @@ export function SidebarAddressRow({ width }: { width: number }) {
     <View
       ref={field}
       onLayout={anchor}
-      style={{ position: "absolute", left: layout.sidebarInset, right: layout.sidebarInset, top: SIDEBAR_FIELD.top, height: SIDEBAR_FIELD.height }}
+      style={{ position: "absolute", left: layout.sidebarInset, right: layout.sidebarInset, top: header.fieldTop, height: SIDEBAR_FIELD.height }}
     >
       <ToolbarRowContext.Provider value={TOOLBAR_ROWS.regular}>
-        {tab?.url ? <PageField tab={tab} windowId={windowId} width={width - 2 * layout.sidebarInset} /> : <EmptyField windowId={windowId} />}
+        {tab?.url ? <PageField tab={tab} windowId={windowId} /> : <EmptyField windowId={windowId} />}
       </ToolbarRowContext.Provider>
     </View>
   );
 }
 
-const HOST_ROOM = 84;
-
-function PageField({ tab, windowId, width }: { tab: NonNullable<ReturnType<typeof useToolbarTab>>; windowId: string; width: number }) {
+function PageField({ tab, windowId }: { tab: NonNullable<ReturnType<typeof useToolbarTab>>; windowId: string }) {
   const palette = toolbarPalette(useTheme(), null);
   const loading = useTabLive(tab.id, (l) => l.isLoading);
   const loaded = usePageProgress(tab.id);
   const progress = loading ? loaded : null;
-  const limit = extensionsFitting(width - 10 - 3 - HOST_ROOM);
-  const extensionsWidth = useToolbarExtensionsWidth(windowId, limit);
   return (
     <SidebarUrlField
       tab={tab}
@@ -138,13 +134,6 @@ function PageField({ tab, windowId, width }: { tab: NonNullable<ReturnType<typeo
       onFocus={alreadyFocused}
       height={SIDEBAR_FIELD.height}
       progress={progress}
-      accessory={
-        extensionsWidth ? (
-          <View style={{ width: extensionsWidth - 6, height: 28 }}>
-            <ToolbarExtensions tabId={tab.id} windowId={windowId} palette={palette} top={0} right={0} limit={limit} />
-          </View>
-        ) : null
-      }
     />
   );
 }

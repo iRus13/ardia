@@ -1,7 +1,7 @@
 import { displayHost, displayUrl, hostOf, type Suggestion } from "@ardia/core";
 import { memo } from "react";
 import { Image, Pressable, Text as NativeText, View } from "react-native";
-import { Button, Symbol, Text, useHover, useTheme, withAlpha, type Theme } from "../ui";
+import { Button, GlassFill, Symbol, Text, useGlass, useHover, useTheme, withAlpha, type Theme } from "../ui";
 import { Favicon } from "../favicon/Favicon";
 import { SELECTED_SUGGESTION_ALPHA, SUGGESTION } from "./tokens";
 
@@ -111,6 +111,7 @@ const SuggestionRow = memo(
     actions: RowActions;
   }) {
     const theme = useTheme();
+    const glass = useGlass();
     const { hovered, hoverProps } = useHover();
     const [title, accessory] = labels(s);
     const hint = trailing ?? (s.kind === "action" ? s.hint : s.kind === "provider" ? s.provider : null);
@@ -128,9 +129,10 @@ const SuggestionRow = memo(
               alignItems: "center",
               paddingHorizontal: SUGGESTION.padX,
               gap: SUGGESTION.gap,
-              backgroundColor: selected ? selectedFill(theme) : hovered ? theme.commandBarHover : undefined,
+              backgroundColor: glass ? undefined : selected ? selectedFill(theme) : hovered ? theme.commandBarHover : undefined,
             }}
           >
+            {glass && (selected || hovered) ? <GlassFill radius={SUGGESTION.radius} state={selected ? "active" : "lit"} /> : null}
             <SuggestionIcon suggestion={s} />
             <Text lines={1} size="title" style={{ flexShrink: 1 }}>
               {title}

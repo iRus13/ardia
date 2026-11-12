@@ -9,7 +9,7 @@ Automatic updates are disabled, and the upstream update feed and signing key are
 ## Current status
 
 - The source has been forked and the initial display name has been configured.
-- No customized application has been built, launched or installed yet.
+- A local Apple Silicon Release app has been built, signature-verified and launched. It uses a separate local bundle identity and its own profile; no public release has been published.
 - The app icon uses Helium’s original dark macOS artwork; most in-app Ardia wording remains.
 - The bundle identifier, signing configuration, data locations and service endpoints still need review before a usable standalone build. Do not run this fork against an existing Ardia profile.
 - Passkeys and saved cards depend on the upstream developer signing identity and are not expected to work in a separately signed build without additional changes.
@@ -23,7 +23,7 @@ The sidebar now uses the existing native regular Liquid Glass panel in both dock
 
 The glass backing does not receive pointer events, and the existing sidebar resize, tab drag, profile swipe, reveal geometry and reveal shadow are preserved. No extra animations were added. Native system materials adapt to macOS accessibility display settings; a live Reduce Transparency and contrast check remains outstanding.
 
-The web demo was visually checked with the sidebar open and hidden, and the hide control worked. The 24 sidebar motion checks, 7 pane chrome checks, 13 convention checks and changed-file syntax checks passed. Dependency installation timed out on react-native, so a full typecheck and native app build remain unverified. The web preview approximates the material; Apple’s native rendering still needs a live check.
+The web demo was visually checked with the sidebar open and hidden, and the hide control worked. The 24 sidebar motion checks, 7 pane chrome checks, 13 convention checks and changed-file syntax checks passed. The dependency setup was subsequently completed; full typecheck and the local native Release build pass. The web preview approximates the material; Apple’s native rendering still needs a live check.
 
 ## App icon
 
@@ -34,3 +34,17 @@ The default appearance was changed on 2026-11-12 to use the original dark varian
 Helium’s repository is licensed under [GPL-3.0](https://github.com/imputnet/helium-macos/blob/main/LICENSE). The imported artwork retains that license and The Helium Authors’ attribution in NOTICE; Ardia’s Apache-2.0 license does not replace the artwork’s license. The distributed browser remains GPL-3.0.
 
 Icon Composer exported both Default and Dark renditions successfully for macOS design generation 27. The native Default rendition can have different system lighting from Dark despite the dark default palette; the original Dark rendition is the visual reference. The editable vector layers remain intact.
+
+## Space icons and footer
+
+The profile icon picker opens on an eight-column, seven-row symbol palette matching the requested reference. Existing saved symbol IDs and emoji choices remain supported. Four silhouettes unavailable as native SF Symbols use MIT-licensed Phosphor Icons assets; the original vectors and license are included with the assets.
+
+The footer keeps Library at the left, profile icons in a centered group with a 34-point maximum cadence, and Create Profile at the right. Library opens the existing Bookmarks, History and Downloads commands. The existing download access is included there. Selected profile icons are bright and inactive icons subdued; each icon retains its profile tooltip and context menu. New settings default to showing profile icons, while explicit saved icon/dot preferences remain supported.
+
+## Sidebar layout and motion
+
+The address pill shows the host first, an always-visible Copy URL chain button, then Site Controls. Copy uses the existing clean-link action and toast. Windowed navigation has its own row below the native window controls; fullscreen keeps the compact layout.
+
+Command panels, the New Tab search box, selected and hovered suggestions, ordinary tab rows and tab-list controls use native glass in Glass mode. Classic and older-macOS fallbacks remain. Drag targets and multiselection keep their existing feedback.
+
+Hidden sidebar reveal and hide start immediately and use a 150 ms ease-out, matching the owner’s current Dock timing. Reduce Motion is instant. Focus gates, hold areas and rapid reversal remain; the macOS Dock preferences are unchanged.
