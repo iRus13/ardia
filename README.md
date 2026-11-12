@@ -1,3 +1,11 @@
+# Ѫ
+
+A personal fork of [Ardia](https://github.com/ardia-browser/ardia). Initial branding and setup are in progress; there is no custom release yet. See [fork status](docs/fork.md).
+
+The upstream README is retained below for build instructions and attribution.
+
+---
+
 <p align="center">
   <img src="apps/site/src/assets/app-icon.png" width="128" height="128" alt="Ardia's app icon">
 </p>
