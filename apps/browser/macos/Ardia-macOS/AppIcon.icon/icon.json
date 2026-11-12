@@ -1,66 +1,72 @@
 {
-  "fill": {
-    "solid": "srgb:0.97647,0.96078,0.89020,1.00000"
-  },
+  "features": [
+    "specular-location"
+  ],
+  "fill-specializations": [
+    {
+      "value": {
+        "linear-gradient": [
+          "srgb:0.192,0.192,0.192,1",
+          "srgb:0.078,0.078,0.078,1"
+        ]
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": "automatic"
+    }
+  ],
   "groups": [
     {
       "layers": [
         {
-          "glass": false,
-          "image-name": "sun.png",
-          "name": "sun"
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.98431,0.98824,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.98431,0.98824,1.00000,1.00000"
+              }
+            }
+          ],
+          "glass": true,
+          "hidden": false,
+          "image-name": "logo.svg",
+          "name": "logo",
+          "opacity-specializations": [
+            {
+              "value": 0.96
+            },
+            {
+              "appearance": "dark",
+              "value": 0.96
+            }
+          ],
+          "position": {
+            "scale": 1.45,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
         }
       ],
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.5
+        "opacity": 0.2
       },
-      "specular": false,
+      "specular": "inside",
       "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "layers": [
-        {
-          "glass": false,
-          "image-name": "front.png",
-          "name": "front"
-        }
-      ],
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "layers": [
-        {
-          "glass": false,
-          "image-name": "back.png",
-          "name": "back"
-        }
-      ],
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
+        "enabled": true,
         "value": 0.5
       }
     }
   ],
   "supported-platforms": {
-    "squares": [
-      "macOS"
-    ]
+    "squares": "shared"
   }
 }
