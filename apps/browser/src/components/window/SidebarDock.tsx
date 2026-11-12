@@ -160,6 +160,7 @@ export function DockedLayout({
           open={open}
           width={width}
           fullscreen={fullscreen}
+          compactHeader={addressBar}
           lights={lights}
           right={right}
           windowWidth={windowWidth}
@@ -174,6 +175,7 @@ function SidebarDock({
   open,
   width,
   fullscreen,
+  compactHeader,
   lights,
   right,
   windowWidth,
@@ -182,6 +184,7 @@ function SidebarDock({
   open: boolean;
   width: number;
   fullscreen: boolean;
+  compactHeader: boolean;
   lights: readonly [number, number];
   right: boolean;
   windowWidth: number;
@@ -239,7 +242,7 @@ function SidebarDock({
     () => peek.slide.interpolate({ inputRange: [0, 1], outputRange: [-12 * outward, width * outward] }),
     [peek.slide, width, outward],
   );
-  useSidebarLights(windowId, dock, peek.slide, { width, peeking, fullscreen, lights, right, peekAt });
+  useSidebarLights(windowId, dock, peek.slide, { width, peeking, fullscreen, lights, right, peekAt, controlsInPeek: !compactHeader });
   const edgeSide = right ? "right" : "left";
   const sidebar = useMemo(
     () => (

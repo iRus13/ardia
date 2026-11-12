@@ -45,6 +45,7 @@ import { useDownloadView } from "./useDownloadView";
 import { FooterButton } from "./FooterButton";
 import { useDownloadsPlacement } from "./useDownloadsPlacement";
 import { sameSize, useSettled, type Size } from "../ui/useSettled";
+import { useDownloadsPreview } from "./useDownloadsPreview";
 import { DOWNLOADS_LIST as L, FILE_ICON_GLYPH_SHARE, MAGNET, useDownloadsColors } from "./tokens";
 
 const rowFill = (theme: Theme, hovered: boolean, pressed: boolean) => (hovered || pressed ? menuRowFill(theme, pressed) : undefined);
@@ -79,6 +80,8 @@ export function DownloadsPopover() {
 }
 
 function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; closing: boolean; onClosed: () => void }) {
+  const preview = useWindowUi().downloadsPreview;
+  const previewHover = useDownloadsPreview(windowId);
   const liveIds = useDownloads(windowId, useShallow((list) => list.map((d) => d.id)));
   const liveClearable = useDownloads(windowId, (list) => list.some((d) => d.state !== "downloading"));
   const shownList = useRef({ ids: liveIds, clearable: liveClearable });
@@ -88,7 +91,7 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
   const addressBar = useAddressBarInSidebar();
   const sidebarRight = useSidebarSide(windowId) === "right";
   const setOpen = (value: boolean) => setDownloadsOpen(windowId, value);
-  const { root, placement: p, onLayout } = useDownloadsPlacement(windowId, closing, { topStrip, footer: addressBar, footerBottom: PROFILE_DOTS_HEIGHT + 2, sidebarRight });
+  const { root, placement: p, onLayout } = useDownloadsPlacement(windowId, closing, { topStrip, footer: addressBar, footerBottom: PROFILE_DOTS_HEIGHT + 2, sidebarRight }, preview);
   const placed = p !== null;
   const appear = usePopoverMotion(closing, onClosed, placed);
 
@@ -100,10 +103,11 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
   const listMax = p ? Math.max(L.row, Math.min(L.visibleRows * L.row, p.room - L.chrome)) : L.visibleRows * L.row;
 
   return (
-    <View ref={root} collapsable={false} onLayout={onLayout} pointerEvents={closing ? "none" : "auto"} style={StyleSheet.absoluteFill}>
-      <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} />
+    <View ref={root} collapsable={false} onLayout={onLayout} pointerEvents={closing ? "none" : "box-none"} style={StyleSheet.absoluteFill}>
+      {!preview && <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} />}
       {p ? (
         <Animated.View
+          {...previewHover}
           style={{
             position: "absolute",
             left: p.left,

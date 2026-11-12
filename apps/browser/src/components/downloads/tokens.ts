@@ -52,6 +52,8 @@ export const DOWNLOADS_LIST = {
 
 export const DOWNLOADS_BUTTON = { icon: 16, radius: radius.chrome } as const;
 
+export const DOWNLOADS_PREVIEW = { leaveDelay: 180 } as const;
+
 export const FILE_ICON_GLYPH_SHARE = 0.62;
 
 export const MAGNET = {

@@ -17,11 +17,11 @@ import { SidebarFieldFill } from "./SidebarField";
 import { SidebarUrlField, useToolbarTab } from "../toolbar/Toolbar";
 import { HistoryButton, ReloadButton } from "../toolbar/NavButtons";
 import { GLYPH } from "../toolbar/tokens";
-import { HEADER_TOOLS, navButtonsFitting, type HeaderButton } from "../window/dockMotion";
+import { navButtonsFitting, type HeaderButton } from "../window/dockMotion";
 import { useSidebarHeaderLayout } from "./useSidebarHeaderLayout";
 
 const BUTTON = layout.toolbarButton;
-const { edge: EDGE } = HEADER_TOOLS;
+const EDGE = 7;
 const PLATE = 32;
 const PLATE_RADIUS = radius.toolbar;
 
@@ -34,7 +34,7 @@ export function SidebarHeaderTools({ width }: { width: number }) {
   const sidebarHint = useShortcutHint("toggleSidebar");
   const header = useSidebarHeaderLayout(windowId);
   const toggleX = header.toggleCenter;
-  const { buttons, step } = navButtonsFitting(width, BUTTON, toggle, toggleX);
+  const { buttons, step } = navButtonsFitting(width, BUTTON, toggle, toggleX, EDGE);
   const shown = tab ? buttons : [];
   const last = width - EDGE - BUTTON / 2;
   const centres = shown.map((_, i) => last - (shown.length - 1 - i) * step);
@@ -112,7 +112,7 @@ export function SidebarAddressRow() {
     <View
       ref={field}
       onLayout={anchor}
-      style={{ position: "absolute", left: layout.sidebarInset, right: layout.sidebarInset, top: header.fieldTop, height: SIDEBAR_FIELD.height }}
+      style={{ position: "absolute", left: SIDEBAR_FIELD.inset, right: SIDEBAR_FIELD.inset, top: header.fieldTop, height: SIDEBAR_FIELD.height }}
     >
       <ToolbarRowContext.Provider value={TOOLBAR_ROWS.regular}>
         {tab?.url ? <PageField tab={tab} windowId={windowId} /> : <EmptyField windowId={windowId} />}

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { LayoutChangeEvent, View } from "react-native";
 import { downloadsPlacement, type DownloadsFallback, type DownloadsPlacement, type Size } from "./downloadsPlacement";
-import { locateDownloadsButton, measureInWindow } from "./DownloadsButton";
+import { locateDownloadsButton, measureInWindow } from "./downloadsAnchor";
 import { DOWNLOADS_LIST } from "./tokens";
 
-export function useDownloadsPlacement(windowId: string, closing: boolean, fallback: DownloadsFallback) {
+export function useDownloadsPlacement(windowId: string, closing: boolean, fallback: DownloadsFallback, preview = false) {
   const root = useRef<View>(null);
   const [placement, setPlacement] = useState<DownloadsPlacement | null>(null);
   const [viewport, setViewport] = useState<Size | null>(null);
@@ -17,13 +17,13 @@ export function useDownloadsPlacement(windowId: string, closing: boolean, fallba
     const mine = ++ticket.current;
     void measureInWindow(node).then(async (origin) => {
       if (!origin || mine !== ticket.current || latest.current.closing) return;
-      const anchor = await locateDownloadsButton(windowId, origin);
+      const anchor = await locateDownloadsButton(windowId, origin, preview ? "library" : undefined);
       if (mine === ticket.current && !latest.current.closing) setPlacement(downloadsPlacement(origin, anchor, latest.current.fallback));
     });
   };
   useEffect(() => {
     if (!closing) locate();
-  }, [closing, fallback.topStrip, fallback.footer, fallback.sidebarRight]);
+  }, [closing, fallback.topStrip, fallback.footer, fallback.sidebarRight, preview]);
   useEffect(() => {
     if (placement || !viewport) return;
     const timer = setTimeout(() => setPlacement((placed) => placed ?? downloadsPlacement(viewport, null, latest.current.fallback)), DOWNLOADS_LIST.placeDeadlineMs);

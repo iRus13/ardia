@@ -16,7 +16,6 @@ import { togglePopover } from "../../state/tabs/popoverDismiss";
 import { useHistoryAvailability } from "../../state/tabs/navigation";
 import { toggleBookmarkOfTab } from "../../state/bookmarks/actions";
 import { useBookmarksShown } from "../../state/bookmarks/hooks";
-import { copyPageUrl } from "../../state/site/selection";
 import { closePane, openSplitPane, showSplitMenu } from "../../state/splits/actions";
 import { useEasedColor, type ToolbarPalette } from "../ui/toolbarColors";
 import { useSitePalette } from "./useSitePalette";
@@ -34,6 +33,7 @@ import { HistoryButton, ReloadButton } from "./NavButtons";
 import { ProgressBar, TabProgressBar } from "./ProgressBar";
 import { TOOLBAR_MOTION } from "./tokens";
 import { useToolbarRow } from "./useToolbarRow";
+import { CopyUrlButton } from "./CopyUrlButton";
 
 type ToolbarTab = Pick<Tab, "id" | "url" | "title" | "windowId" | "zoom">;
 const toolbarTab = (t: Tab | undefined): ToolbarTab | undefined =>
@@ -288,11 +288,6 @@ type PageButtonProps = { tab: ToolbarTab; palette: ToolbarPalette; windowId: str
 
 function PageButton(props: PageButtonProps) {
   return useBookmarksShown() ? <BookmarkButton {...props} /> : <CopyUrlButton {...props} />;
-}
-
-function CopyUrlButton({ tab, palette }: PageButtonProps) {
-  const copyHint = useShortcutHint("copyUrl");
-  return <Button variant="icon" toolbar palette={palette} icon="link" look="field" onPress={() => void copyPageUrl(tab.id)} tooltip={withShortcut("Copy URL", copyHint)} />;
 }
 
 function BookmarkButton({ tab, palette, windowId }: PageButtonProps) {

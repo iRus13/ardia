@@ -23,7 +23,7 @@ export function planSidebar(
       partitions: result.spaces.length ? 1 : 0,
       dataPartition: 0,
       favorites: [result.favorites],
-      sharesTopApps: false,
+      sharesTopApps: true,
     };
   }
   const containers: number[] = [];
@@ -46,4 +46,8 @@ export function planSidebar(
     else if (!everySpace.some((s) => containerOf(s) === containerOf(tab))) favorites[dataPartition]!.push(tab);
   }
   return { spaces, partitions: containers.length, dataPartition, favorites, sharesTopApps: true };
+}
+
+export function importedSpaceIcon(space: Pick<SpaceSuggestion, "emoji" | "icon">): string | null {
+  return space.emoji || (space.icon?.startsWith("symbol:") ? space.icon : null);
 }

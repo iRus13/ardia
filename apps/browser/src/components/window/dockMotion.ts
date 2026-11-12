@@ -28,8 +28,8 @@ export function headerToggleX(windowFullScreen: boolean): number {
   return windowFullScreen ? HEADER_TOOLS.fullScreenToggleX : HEADER_TOOLS.toggleX;
 }
 
-export function navButtonsFitting(width: number, button = 30, toggle = true, toggleX: number = HEADER_TOOLS.toggleX): { buttons: HeaderButton[]; step: number } {
-  const { pitch, edge } = HEADER_TOOLS;
+export function navButtonsFitting(width: number, button = 30, toggle = true, toggleX: number = HEADER_TOOLS.toggleX, edge: number = HEADER_TOOLS.edge): { buttons: HeaderButton[]; step: number } {
+  const { pitch } = HEADER_TOOLS;
   const span = width - edge - button / 2 - (toggle ? toggleX : toggleX - pitch);
   const count = Math.max(0, Math.min(3, Math.floor(span / button)));
   const buttons: HeaderButton[] = count === 3 ? ["back", "forward", "reload"] : count === 2 ? ["back", "forward"] : count === 1 ? ["back"] : [];

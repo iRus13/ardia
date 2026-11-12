@@ -60,4 +60,33 @@ final class ArcSidebarTests: XCTestCase {
     XCTAssertTrue(json.contains(#""role":"split""#))
     XCTAssertTrue(json.contains(#""splitId":"H-USV""#))
   }
+  func testSpaceFavoritesAndPinnedRowsKeepTheirCustomSymbols() throws {
+    let box: [String: Any] = [
+      "spaces": [["id": "work", "title": "Work", "profile": ["default": true],
+                   "customInfo": ["iconType": ["icon": "fileTrayFull"]],
+                   "newContainerIDs": [["pinned": [:]], "pinned"]]],
+      "topAppsContainerIDs": [["default": true], "favorites"],
+      "items": [
+        ["id": "favorites", "childrenIds": ["video"], "data": ["itemContainer": [:]]],
+        ["id": "video", "data": ["tab": ["savedURL": "https://video.example/", "savedTitle": "Video", "customInfo": ["iconType": ["icon": "video"]]]]],
+        ["id": "pinned", "childrenIds": ["reading"], "data": ["itemContainer": [:]]],
+        ["id": "reading", "data": ["tab": ["savedURL": "https://reading.example/", "savedTitle": "Reading", "customInfo": ["iconType": ["icon": "book"]]]]],
+      ],
+    ]
+    let data = try JSONSerialization.data(withJSONObject: ["sidebar": ["containers": [["global": [:]], box]]])
+    let parsed = try ArcSidebar.parse(data)
+    XCTAssertEqual(parsed.spaces.first?.icon, "symbol:tray.full.fill")
+    XCTAssertEqual(parsed.spaces.first?.pinned.first?.customIcon, "symbol:book.fill")
+    XCTAssertEqual(parsed.favorites["Default"]?.first?.customIcon, "symbol:video.fill")
+    let encoded = String(decoding: try JSONEncoder().encode(parsed.favorites["Default"]!), as: UTF8.self)
+    XCTAssertTrue(encoded.contains(#""customIcon":"symbol:video.fill""#))
+  }
+
+  func testArcCustomIconsKeepEmojiAndIgnoreUnknownSymbols() {
+    XCTAssertEqual(ArcIcon.value(["emoji_v2": "🌙"]), "🌙")
+    XCTAssertEqual(ArcIcon.value(["icon": "shapes"]), "symbol:drop.triangle.fill")
+    XCTAssertEqual(ArcIcon.value(["icon": "medical"]), "symbol:asterisk")
+    XCTAssertNil(ArcIcon.value(["icon": "not-a-known-icon"]))
+  }
+
 }

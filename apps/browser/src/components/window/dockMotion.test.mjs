@@ -7,6 +7,7 @@ const { PAGE_FRAME, pageFrameOf } = await import("../../lib/windowLayout.ts");
 const DEFAULT_PEEK = dm.cardFrameOf(PAGE_FRAME.default).peek;
 const motion = await import("../ui/motion.ts");
 const { toolbarGeometry } = await import("./geometry.ts");
+const { slidingCenter } = await import("./useDockLights.ts");
 const { useBrowser } = await import("../../state/browser/store.ts");
 const { tabsShownIn } = await import("../../state/browser/model.ts");
 const { flushPersistence, loadSession, startPersistence } = await import("../../state/session/persist.ts");
@@ -84,11 +85,18 @@ function checkPeekCoversCard(frame) {
 
 test("with the address field in the sidebar the lights sit on Arc's header row, docked, sliding and in the peek", () => {
   const arc = dm.ARC_LIGHTS_CENTER;
-  assert.deepEqual(arc, [dm.LIGHTS_CENTER[0], 24]);
-  assert.deepEqual(dm.lightsCenter(0, 0, arc), [25, 24], "docked: placed, not left at AppKit's default");
-  assert.deepEqual(dm.lightsCenter(95, 0, arc), [25 - 95, 24], "half way out on the same row");
+  assert.deepEqual(arc, [20, 24]);
+  assert.deepEqual(dm.lightsCenter(0, 0, arc), [20, 24], "docked: placed, not left at AppKit's default");
+  assert.deepEqual(dm.lightsCenter(95, 0, arc), [20 - 95, 24], "half way out on the same row");
   const { left: px, top: py } = DEFAULT_PEEK;
-  assert.deepEqual(dm.lightsCenter(-px, py, arc), [25 + px, 24 + py], "in the peek panel");
+  assert.deepEqual(dm.lightsCenter(-px, py, arc), [20 + px, 24 + py], "in the peek panel");
+});
+
+test("the compact address-bar peek keeps native window controls clear of its sidebar toggle", () => {
+  const options = { width: 212, peeking: true, fullscreen: false, lights: dm.ARC_LIGHTS_CENTER, right: false, peekAt: DEFAULT_PEEK, controlsInPeek: false };
+  for (const slide of [0, 0.5, 1]) assert.deepEqual(slidingCenter(options, 0, slide), [20 - 212, 24]);
+  assert.deepEqual(slidingCenter({ ...options, peeking: false }, 1, 0), [20, 24], "docked controls return to the header row");
+  assert.deepEqual(slidingCenter({ ...options, controlsInPeek: true }, 0, 1), [20 + DEFAULT_PEEK.left, 24 + DEFAULT_PEEK.top], "toolbar-style peeks retain their window controls");
 });
 
 test("the sidebar's rows sit 9 pt from the window's edge and 9 pt from the card at the default frame; a thinner frame never pushes the card into the sidebar's own padding", async () => {

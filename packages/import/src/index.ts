@@ -65,6 +65,7 @@ export type BookmarkNode = {
   children?: BookmarkNode[];
   role?: BookmarkRole;
   pageTitle?: string;
+  customIcon?: string;
 };
 
 export type ImportedHistoryEntry = { url: string; title: string; visits: number; lastVisit: number; typedCount?: number };
@@ -74,6 +75,7 @@ export type ImportedTab = {
   title: string;
   pinned: boolean;
   customTitle?: string;
+  customIcon?: string;
   groupId?: string;
   splitId?: string;
   windowIndex: number;

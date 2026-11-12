@@ -5,3 +5,5 @@ The planet, campfire, pizza and skull silhouettes are the filled Phosphor Icons 
 Copyright (c) 2023 Phosphor Icons. These four icons are MIT licensed; see LICENSE.phosphor.
 
 These supplement the system SF Symbols for shapes unavailable as SF Symbols on macOS. Existing stored symbol identifiers remain unchanged.
+
+`library@2x.png` is the 26-point `LibraryIcon` template rendered at 2× from the locally installed Arc application's `ARCClients_BaseAssets.bundle`, used for the owner's requested Arc footer reference. It is Arc artwork, separate from the MIT-licensed Phosphor symbols above.

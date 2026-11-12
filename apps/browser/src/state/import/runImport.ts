@@ -4,7 +4,7 @@ import { confirm } from "../app/system";
 import { plural } from "../browser/model";
 import { useBrowser } from "../browser/store";
 import { MAX_DRAFT_LINKS } from "../groups/draftGroups";
-import { createProfile } from "../profiles/actions";
+import { createProfile, updateProfile } from "../profiles/actions";
 import { noteImportedSpaces } from "../telemetry/usage";
 import {
   applyResult,
@@ -22,7 +22,7 @@ import {
   type ImportResult,
 } from "./apply";
 import { diaProfilesFor } from "./diaTabs";
-import { planSidebar } from "./sidebarPlan";
+import { importedSpaceIcon, planSidebar } from "./sidebarPlan";
 import {
   APP_TAB_KINDS,
   ENCRYPTED_KINDS,
@@ -182,7 +182,8 @@ export async function runImport(wanted: ReadonlySet<ImportKind>, withoutKey = fa
         const name = space.name || "Space";
         const head = members[partition]?.[0] ?? null;
         const shared = plan.sharesTopApps && plan.spaces.filter((p) => p.partition === partition).length > 1;
-        const dest = await nextDestination(name, space.color, space.emoji, head, shared);
+        const dest = await nextDestination(name, space.color, importedSpaceIcon(space) ?? undefined, head, shared);
+        if (plan.sharesTopApps) updateProfile(dest, { shareTopApps: shared ? true : undefined });
         (members[partition] ??= []).push(dest);
         const r = importArcSpace(dest, space, result.favicons);
         add({ ...emptyCounts(), tabs: r.tabs, bookmarks: r.bookmarks });

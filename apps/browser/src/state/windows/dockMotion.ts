@@ -13,7 +13,7 @@ export function toolbarLightsCenter(compact: boolean, frame: number = CARD_INSET
   if (!center) lightsCenters.set(key, (center = [LIGHTS_X, frame + LIGHTS_BELOW_CARD_TOP - (compact ? compactLift(toolbarRowOf(true)) : 0)]));
   return center;
 }
-export const ARC_LIGHTS_CENTER: readonly [number, number] = [25, 24];
+export const ARC_LIGHTS_CENTER: readonly [number, number] = [20, 24];
 export const TOP_STRIP_LIGHTS_CENTER: readonly [number, number] = [20.75, 20.75];
 
 export function lightsCenter(offset: number, down = 0, base: readonly [number, number] = LIGHTS_CENTER): [number, number] {

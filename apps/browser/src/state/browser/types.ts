@@ -203,4 +203,4 @@ export type NewTabTarget = { kind: "list" } | { kind: "group"; groupId: string }
 
 export type PanelState = { open: boolean; initialText: string; newTab?: NewTabTarget; placement?: BarPlacement };
 
-export type WindowUi = { panel: PanelState; downloadsOpen: boolean };
+export type WindowUi = { panel: PanelState; downloadsOpen: boolean; downloadsPreview?: boolean };

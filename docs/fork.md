@@ -51,7 +51,7 @@ Hidden sidebar reveal and hide start immediately and use a 150 ms ease-out, matc
 
 ## Reference layout polish
 
-The compact hover-revealed sidebar matches the supplied reference geometry in points: navigation center 24, address top 46/height 36, pinned tiles top 90/height 47, profile heading center 163, New Tab center 204. The heading uses each page’s own profile ID, and retains its profile menu. Windowed docked sidebars reserve a separate native window-control row; peeking sidebars do not.
+The compact hover-revealed sidebar matches the supplied reference geometry in points: navigation center 24, address top 46/height 36, pinned tiles top 90/height 47, profile heading center 163, New Tab center 204. The heading uses each page’s own profile ID, and retains its profile menu. Windowed docked sidebars share the navigation row with the native window controls: the first window control is at x=20 and the sidebar toggle is at x=89. Peeks and native fullscreen use x=29 for the toggle. Compact peeks keep native window controls offscreen so they cannot cover the toggle.
 
 All sidebar transitions now use the same 150 ms positional ease-out, including docked button/keyboard toggles and hover reveal. Pinning an already visible peek does not start a second slide, and repeated hover events do not restart the animation.
 
@@ -60,3 +60,11 @@ Verified in an isolated native Debug instance: edge reveal and hold behavior, th
 ## macOS fullscreen sidebar
 
 The native edge watcher accepts macOS fullscreen windows, allowing the auto-hidden sidebar to reveal and remain interactive from either edge. Existing visibility, minimization, pointer-hit and pressed-button checks remain. HTML/video fullscreen keeps its separate behavior. The sidebar retains the same immediate 150 ms reveal and hide.
+
+## Arc controls and shared spaces
+
+The sidebar address pill and content use an 8 pt inset, with 8 pt gaps between pinned tiles. New Tab text aligns with the space heading. The copy icon follows the shipped Arc spring/clip transitions and a one-second confirmation dwell, with repeated presses extending the confirmation. Reduce Motion uses immediate feedback.
+
+The original Library glyph is used for the bottom-left control. Its hover preview shows recent downloads; clicking opens the full Downloads page, and the context menu retains other Library navigation. The preview uses native glass and hover retention between the button and preview. The copy and Library motion constants were recovered from the installed Arc build; hover scale/lift amplitudes are still an approximation pending a live frame comparison.
+
+Arc imports preserve custom symbols and emoji on spaces and pinned websites, and preserve favorites shared by spaces using the same browser profile. Local profile alignment is separate from repository source and does not publish browsing data.

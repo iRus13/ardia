@@ -53,8 +53,9 @@ export function SidebarRowSurface({
   );
 }
 
-export const SidebarRowLabel = memo(function SidebarRowLabel({ text, color, weight, compact = false }: { text: string; color: string; weight?: "medium" | "regular"; compact?: boolean }) {
-  return <FadeLabel text={text} fontSize={compact ? SIDEBAR_TYPE.compact : font.body.fontSize} weight={weight} color={color} style={compact ? COMPACT_TITLE_FRAME : ROW_TITLE_FRAME} />;
+export const SidebarRowLabel = memo(function SidebarRowLabel({ text, color, weight, compact = false, gap }: { text: string; color: string; weight?: "medium" | "regular"; compact?: boolean; gap?: number }) {
+  const frame = compact ? COMPACT_TITLE_FRAME : ROW_TITLE_FRAME;
+  return <FadeLabel text={text} fontSize={compact ? SIDEBAR_TYPE.compact : font.body.fontSize} weight={weight} color={color} style={gap === undefined ? frame : { ...frame, marginLeft: gap }} />;
 });
 
 export function SidebarListRow({ height, fill, padRight = 0, style, children }: { height: number; fill?: string; padRight?: number; style?: StyleProp<ViewStyle>; children: ReactNode }) {

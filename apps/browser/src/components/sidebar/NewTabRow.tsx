@@ -10,11 +10,11 @@ import { openOverflowMenu, openSidebarMenu } from "../../state/sidebar/menus";
 import { toggleNewTabBar } from "../../state/omnibox/newTabBar";
 import { modifiersOf } from "../../lib/keys";
 import { useClipped, useShift, type ClipSource } from "./EntryMotion";
-import { TAB_ROW, useSidebarTokens } from "./tokens";
+import { SPACE_HEADING, TAB_ROW, useSidebarTokens } from "./tokens";
 import { SidebarRowLabel } from "./SidebarRow";
 
 const CLIPPED = { marginTop: -layout.rowGap, paddingTop: layout.rowGap, overflow: "hidden" } as const;
-const NEW_TAB_LABEL_X = 30;
+const NEW_TAB_LABEL_X = TAB_ROW.contentLeft + 16 + SPACE_HEADING.gap;
 const CLEANED_HINT_RIGHT = 30;
 const CLEANED_HINT_GAP = space.m;
 const BUTTONS_ROOM = TAB_ROW.trailing + TAB_ROW.closeSlot + TAB_ROW.trailing;
@@ -76,7 +76,7 @@ export const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip 
             >
               {glass && (pressed || hovered) ? <GlassFill radius={radius.chrome} state={pressed ? "pressed" : "lit"} /> : null}
               <Symbol name="plus" size={13} weight="medium" color={tokens.newTabIcon} style={{ width: 16, height: 16 }} />
-              <SidebarRowLabel text="New Tab" color={tokens.newTabLabel} />
+              <SidebarRowLabel text="New Tab" color={tokens.newTabLabel} gap={SPACE_HEADING.gap} />
             </View>
           )}
         </Pressable>

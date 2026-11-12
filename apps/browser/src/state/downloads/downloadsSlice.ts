@@ -52,7 +52,7 @@ export const createDownloadsSlice: StateCreator<BrowserState, [], [], DownloadsS
       const downloads = exists ? s.downloads.map((x) => (x.id === d.id ? d : x)) : [d, ...s.downloads].slice(0, MAX_DOWNLOADS);
       const focused = focusedWindowOf(s);
       const open = !exists && focused && downloadVisibleIn(s, d, s.windows[focused]);
-      return { downloads, ...(open ? patchWindowUi(s, focused, { downloadsOpen: true }) : {}) };
+      return { downloads, ...(open ? patchWindowUi(s, focused, { downloadsOpen: true, downloadsPreview: false }) : {}) };
     });
   },
 

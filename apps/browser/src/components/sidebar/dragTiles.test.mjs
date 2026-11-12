@@ -7,21 +7,26 @@ const { useFolderPanel } = await import("../../state/sidebar/tileFolderUi.ts");
 const { addToTileFolder, tileFolderOf } = await import("../../state/pins/tileFolders.ts");
 const { useBrowser } = await import("../../state/browser/store.ts");
 const { S, entryKey, sceneLayout, mount, TILE } = D;
+const { TILE_GAP } = await import("./pinZone.ts");
 
 const traces = golden("dragTiles");
 after(() => traces.write());
 
 const GRID_TOP = 60;
 const REFERENCE_TILE_HEIGHT = 41;
+const REFERENCE_TILE_GAP = 6;
 
 const measured = (point) => ({ ...point, measured: true });
 const referencePoint = (scene, point) => {
-  const rows = Math.round((scene.grid.h + 6) / (TILE + 6));
-  const referenceBottom = GRID_TOP + rows * REFERENCE_TILE_HEIGHT + (rows - 1) * 6;
-  const row = Math.floor((point.y - GRID_TOP) / (REFERENCE_TILE_HEIGHT + 6));
-  const inGap = point.y - GRID_TOP - row * (REFERENCE_TILE_HEIGHT + 6) >= REFERENCE_TILE_HEIGHT;
-  const shift = point.y < GRID_TOP ? 0 : point.y >= referenceBottom ? rows : row + (inGap ? 1 : 0);
-  return { x: point.x, y: point.y + shift * (TILE - REFERENCE_TILE_HEIGHT) };
+  const rows = Math.round((scene.grid.h + TILE_GAP) / (TILE + TILE_GAP));
+  const referencePitch = REFERENCE_TILE_HEIGHT + REFERENCE_TILE_GAP;
+  const referenceBottom = GRID_TOP + rows * REFERENCE_TILE_HEIGHT + (rows - 1) * REFERENCE_TILE_GAP;
+  const row = Math.floor((point.y - GRID_TOP) / referencePitch);
+  const inGap = point.y - GRID_TOP - row * referencePitch >= REFERENCE_TILE_HEIGHT;
+  const heightChange = TILE - REFERENCE_TILE_HEIGHT;
+  const gapChange = TILE_GAP - REFERENCE_TILE_GAP;
+  const shift = point.y < GRID_TOP ? 0 : point.y >= referenceBottom ? rows * heightChange + (rows - 1) * gapChange : row * (heightChange + gapChange) + (inGap ? heightChange : 0);
+  return { x: point.x, y: point.y + shift };
 };
 
 function tilesScene({ tiles = 5, balanced = false, folder = 0, panel = false, emptyPanel = false } = {}) {
@@ -54,10 +59,12 @@ function tilesScene({ tiles = 5, balanced = false, folder = 0, panel = false, em
   return { ...W, L, grid, folderId, members, regions, viewport: { x: 0, y: listTop - 4, w: 200, h: 600 } };
 }
 
+const cellFrame = (m, i) => m.L.entries.filter((e) => e.spec.section === "tiles" && e.spec.kind === "tile")[i].frame;
 const cellCentre = (m, i, dx = 0) => {
-  const cell = m.L.entries.filter((e) => e.spec.section === "tiles" && e.spec.kind === "tile")[i].frame;
+  const cell = cellFrame(m, i);
   return measured({ x: cell.x + cell.w / 2 + dx, y: cell.y + cell.h / 2 });
 };
+const cellFraction = (m, i, fraction) => cellCentre(m, i, cellFrame(m, i).w * fraction);
 
 async function run(t, title, scene, keyOf, path, { commit = true, setup = () => {} } = {}) {
   const m = scene();
@@ -134,7 +141,7 @@ test("held folder: a tile over another's middle for 400 ms makes a folder; movin
     cellCentre(m, 2, 1),
     () => void t.mock.timers.tick(1),
     cellCentre(m, 2, 2),
-    cellCentre(m, 2, 56 * 0.4),
+    cellFraction(m, 2, 0.4),
     cellCentre(m, 3),
     () => void t.mock.timers.tick(200),
     cellCentre(m, 4),
@@ -149,14 +156,14 @@ test("held folder: before the hold is ready, a pointer 40 % off the middle is an
   t.mock.timers.enable({ apis: ["setTimeout"] });
   const m = tilesScene();
   await run(t, "hold reach", tilesScene, tile("t1"), [
-    cellCentre(m, 2, -56 * 0.29),
-    cellCentre(m, 2, -56 * 0.31),
-    cellCentre(m, 2, -56 * 0.1),
+    cellFraction(m, 2, -0.29),
+    cellFraction(m, 2, -0.31),
+    cellFraction(m, 2, -0.1),
     () => void t.mock.timers.tick(400),
-    cellCentre(m, 2, -56 * 0.1),
-    cellCentre(m, 2, -56 * 0.4),
-    cellCentre(m, 2, -56 * 0.44),
-    cellCentre(m, 2, -56 * 0.46),
+    cellFraction(m, 2, -0.1),
+    cellFraction(m, 2, -0.4),
+    cellFraction(m, 2, -0.44),
+    cellFraction(m, 2, -0.46),
   ]);
 });
 

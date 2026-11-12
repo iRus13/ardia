@@ -24,6 +24,8 @@ import { openPages, pageKey, pinnedPages, tilePages } from "../tabs/pageKeys";
 import { withNewTab } from "../tabs/tabs";
 import type { ProfileColor } from "../browser/types";
 import { setProfileTheme } from "../profiles/themeActions";
+import { updateProfile } from "../profiles/actions";
+import { importedSpaceIcon } from "./sidebarPlan";
 import { parseArcTheme } from "./arcTheme";
 import { newProfileLiveFolder } from "../live/engine";
 import { live } from "../live/store";
@@ -149,7 +151,7 @@ export function openInWebStore(profileId: string, urls: string[]) {
   urls.forEach((url, i) => useBrowser.getState().newTab(windowId, { url, profileId, background: i > 0 }));
 }
 
-type IncomingTab = Pick<ImportedTab, "url" | "title" | "pinned" | "customTitle" | "splitId"> & { row?: boolean };
+type IncomingTab = Pick<ImportedTab, "url" | "title" | "pinned" | "customTitle" | "customIcon" | "splitId"> & { row?: boolean };
 
 function freshTabs<T extends IncomingTab>(tabs: T[], pinned: Set<string>, open: Set<string>): T[] {
   const out: T[] = [];
@@ -204,7 +206,7 @@ function importTabsWithSplits(
       profileId,
       background: true,
       pinned: t.pinned,
-      snapshot: { title: t.title, customTitle: t.customTitle ?? null, ...(t.pinned && t.row ? { pin: ROW_PIN } : {}) },
+      snapshot: { title: t.title, customTitle: t.customTitle ?? null, customIcon: t.customIcon ?? null, ...(t.pinned && t.row ? { pin: ROW_PIN } : {}) },
       index: after ? next.windows[windowId]!.tabIds.indexOf(after) + 1 : undefined,
     });
     if (!id) continue;
@@ -219,9 +221,11 @@ function importTabsWithSplits(
   return { tabs: usable.length, splits };
 }
 
-const rowTab = (n: ImportedNode): IncomingTab => ({ url: n.url!, title: n.pageTitle ?? n.title, pinned: true, row: true, customTitle: n.pageTitle ? n.title : undefined });
+const rowTab = (n: ImportedNode): IncomingTab => ({ url: n.url!, title: n.pageTitle ?? n.title, pinned: true, row: true, customTitle: n.pageTitle ? n.title : undefined, customIcon: n.customIcon });
 
 export function importArcSpace(profileId: string, space: SpaceSuggestion, favicons?: ImportedFavicon[]): { tabs: number; bookmarks: number; skipped: number } {
+  const icon = importedSpaceIcon(space);
+  if (icon) updateProfile(profileId, { icon });
   importFavicons(profileId, favicons, [...linksOf(space.pinned), ...space.tabs.map((t) => t.url)]);
   const rows = space.pinned.flatMap((n, i): IncomingTab[] => {
     if (n.type === "url") return n.url ? [rowTab(n)] : [];

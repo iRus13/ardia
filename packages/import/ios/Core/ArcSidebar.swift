@@ -39,7 +39,7 @@ public struct ArcSidebar: Equatable {
         color: midTone(theme),
         colors: gradient(theme),
         emoji: emoji(icon),
-        icon: icon?["icon"] as? String,
+        icon: ArcIcon.value(icon),
         profileId: profile,
         pinned: pinned,
         tabs: today,
@@ -174,8 +174,10 @@ public struct ArcSidebar: Equatable {
     guard let tab = (item["data"] as? [String: Any])?["tab"] as? [String: Any],
           let url = tab["savedURL"] as? String, !url.isEmpty else { return nil }
     let last = (tab["timeLastActiveAt"] as? NSNumber).map { ($0.doubleValue + 978_307_200) * 1000 }
+    let customInfo = tab["customInfo"] as? [String: Any]
+    let customIcon = ArcIcon.value(customInfo?["iconType"] as? [String: Any])
     return ImportedTab(url: url, title: tab["savedTitle"] as? String ?? "", pinned: pinned,
-                       customTitle: customTitle(item), lastActive: last)
+                       customTitle: customTitle(item), lastActive: last, customIcon: customIcon)
   }
 
   struct Items {
@@ -222,6 +224,7 @@ public struct ArcSidebar: Equatable {
         guard seen.insert(id).inserted else { continue }
         var link = BookmarkNode.link(t.customTitle ?? t.title, t.url)
         if t.customTitle != nil { link.pageTitle = t.title }
+        link.customIcon = t.customIcon
         out.append(link)
       } else if let role = liveFolderRole(data["list"]) {
         guard seen.insert(id).inserted else { continue }

@@ -18,6 +18,7 @@ public struct BookmarkNode: Codable, Equatable, Sendable {
   public var children: [BookmarkNode]?
   public var role: String?
   public var pageTitle: String?
+  public var customIcon: String? = nil
 
   public static func folder(_ title: String, _ children: [BookmarkNode], role: String? = nil, dateAdded: Double? = nil) -> BookmarkNode {
     BookmarkNode(type: .folder, title: title, url: nil, dateAdded: dateAdded, children: children, role: role, pageTitle: nil)
@@ -45,6 +46,7 @@ public struct ImportedTab: Codable, Equatable, Sendable {
   public var title: String
   public var pinned: Bool
   public var customTitle: String?
+  public var customIcon: String?
   public var groupId: String?
   public var splitId: String?
   public var windowIndex: Int
@@ -53,11 +55,12 @@ public struct ImportedTab: Codable, Equatable, Sendable {
   public var container: Int?
 
   public init(url: String, title: String, pinned: Bool = false, customTitle: String? = nil, groupId: String? = nil,
-              splitId: String? = nil, windowIndex: Int = 0, active: Bool = false, lastActive: Double? = nil, container: Int? = nil) {
+              splitId: String? = nil, windowIndex: Int = 0, active: Bool = false, lastActive: Double? = nil, container: Int? = nil, customIcon: String? = nil) {
     self.url = url
     self.title = title
     self.pinned = pinned
     self.customTitle = customTitle
+    self.customIcon = customIcon
     self.groupId = groupId
     self.splitId = splitId
     self.windowIndex = windowIndex

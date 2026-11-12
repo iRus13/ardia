@@ -100,8 +100,8 @@
     ]
    },
    "gapKey": "t:t2",
-   "pitch": 53,
-   "gridGrowth": 53,
+   "pitch": 55,
+   "gridGrowth": 55,
    "pins": true,
    "pinCount": 2,
    "pinBefore": "t:t2",
@@ -1729,7 +1729,7 @@
     ]
    },
    "gapKey": "t:t1",
-   "pitch": 53,
+   "pitch": 55,
    "pins": true,
    "pinCount": 1,
    "pinBefore": "t:t1",

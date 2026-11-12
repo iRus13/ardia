@@ -20,7 +20,7 @@ export type UiSlice = {
   setAppDark(dark: boolean): void;
   openPanel(windowId: string, initialText?: string, newTab?: NewTabTarget, placement?: BarPlacement): void;
   closePanel(windowId: string): void;
-  setDownloadsOpen(windowId: string, open: boolean): void;
+  setDownloadsOpen(windowId: string, open: boolean, preview?: boolean): void;
   setFind(tabId: string, patch: Partial<FindState>): void;
 };
 
@@ -58,8 +58,8 @@ export const createUiSlice: StateCreator<BrowserState, [], [], UiSlice> = (set, 
     set((s) => patchWindowUi(s, windowId, { panel: { open: false, initialText: "" } }));
   },
 
-  setDownloadsOpen(windowId, downloadsOpen) {
-    set((s) => patchWindowUi(s, windowId, { downloadsOpen }));
+  setDownloadsOpen(windowId, downloadsOpen, preview = false) {
+    set((s) => patchWindowUi(s, windowId, { downloadsOpen, downloadsPreview: downloadsOpen && preview }));
   },
 
   setFind(tabId, patch) {

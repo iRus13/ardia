@@ -17,7 +17,7 @@ import { openSidebarMenu } from "../../state/sidebar/menus";
 import { PinnedGrid } from "./PinnedGrid";
 import { pinGridHeight } from "./pinZone";
 import { SCROLL_EDGE, ScrollEdgeLine, useScrollEdge } from "./ScrollEdge";
-import { listTopGap } from "./geometry";
+import { listTopGap, SIDEBAR_FIELD } from "./geometry";
 import { startsOffScreen } from "../../state/sidebar/geometry";
 import { toggleNewTabBar } from "../../state/omnibox/newTabBar";
 import { DOCK_SHARE, DOCKED_BOTTOM, GLOW_ROOM, pageLayout, tilesFitDock, type SidebarGeometry } from "./pageLayout";
@@ -45,7 +45,9 @@ type PageProps = {
 
 export const SidebarPage = memo(function SidebarPage({ profileId, slot, paging, width, current, resting, dockAbove, height, rows, geometry, onScrollView, onScrollY }: PageProps) {
   const windowId = useWindowId();
-  const topGap = listTopGap(useAddressBarInSidebar());
+  const addressBar = useAddressBarInSidebar();
+  const topGap = listTopGap(addressBar);
+  const contentInset = addressBar ? SIDEBAR_FIELD.inset : layout.sidebarInset;
   const pageStyle = usePageStyle(windowId, slot, width);
   const sharedTiles = useSharedTilesStyle(windowId, slot, width, paging);
   const [lazy] = useState(() => switchOn("lazySidebarRows"));
@@ -59,7 +61,7 @@ export const SidebarPage = memo(function SidebarPage({ profileId, slot, paging, 
   const playerTab = useSidebarPlayerTab(windowId, profileId);
   const playerHeight = playerTab ? SIDEBAR_PLAYER_HEIGHT : 0;
   const tiles = useSidebarCells(windowId, profileId, offScreen);
-  const innerWidth = width - layout.sidebarInset * 2;
+  const innerWidth = width - contentInset * 2;
   const dragging = useDragging() && current;
   const previewed = usePinnedCount(tiles);
   const dockRoom = height ? (height - playerHeight) * DOCK_SHARE - topGap - SCROLL_EDGE.gap - SCROLL_EDGE.line : Infinity;
@@ -141,7 +143,7 @@ export const SidebarPage = memo(function SidebarPage({ profileId, slot, paging, 
                 {(controller) => (
                   <>
                     <View onLayout={onFixedLayout} style={{ paddingTop: GLOW_ROOM, zIndex: fixedTiles.length ? 1 : 0 }}>
-                      <Animated.View style={[{ paddingHorizontal: layout.sidebarInset }, capped ? { maxHeight: topGap + dockRoom, overflow: "hidden" } : null, dockFixed ? sharedTiles : null]}>
+                      <Animated.View style={[{ paddingHorizontal: contentInset }, capped ? { maxHeight: topGap + dockRoom, overflow: "hidden" } : null, dockFixed ? sharedTiles : null]}>
                         {dockFixed ? <PinnedGrid tabs={fixedTiles} innerWidth={innerWidth} /> : null}
                       </Animated.View>
                       <View style={{ height: fixedTiles.length ? SCROLL_EDGE.gap : topGap - SCROLL_EDGE.inset - SCROLL_EDGE.line }} />
@@ -161,7 +163,7 @@ export const SidebarPage = memo(function SidebarPage({ profileId, slot, paging, 
                           showsVerticalScrollIndicator={false}
                           scrollEventThrottle={16}
                           onScroll={onScroll}
-                          contentContainerStyle={{ flexGrow: 1, width, paddingHorizontal: layout.sidebarInset, paddingTop: LIST_PAD, paddingBottom: docked ? GLOW_ROOM : 0 }}
+                          contentContainerStyle={{ flexGrow: 1, width, paddingHorizontal: contentInset, paddingTop: LIST_PAD, paddingBottom: docked ? GLOW_ROOM : 0 }}
                         >
                           <PageRows
                             windowId={windowId}
@@ -186,12 +188,12 @@ export const SidebarPage = memo(function SidebarPage({ profileId, slot, paging, 
                       </Animated.View>
                     </Animated.View>
                     {playerTab ? (
-                      <View style={{ paddingHorizontal: layout.sidebarInset, paddingTop: docked ? space.m : 0, paddingBottom: docked ? 0 : space.m }}>
+                      <View style={{ paddingHorizontal: contentInset, paddingTop: docked ? space.m : 0, paddingBottom: docked ? 0 : space.m }}>
                         <SidebarPlayer tabId={playerTab} />
                       </View>
                     ) : null}
                     {docked ? (
-                      <View style={{ paddingHorizontal: layout.sidebarInset, paddingTop: layout.rowGap, paddingBottom: DOCKED_BOTTOM }}>
+                      <View style={{ paddingHorizontal: contentInset, paddingTop: layout.rowGap, paddingBottom: DOCKED_BOTTOM }}>
                         <NewTabRow windowId={windowId} />
                       </View>
                     ) : null}

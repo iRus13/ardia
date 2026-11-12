@@ -11,7 +11,7 @@ export const GROUP_INNER_RADIUS = GROUP_RADIUS - GROUP_BORDER;
 export const GROUP_INSET = SIDEBAR_GROUP.inset;
 export const groupMembersPadBottom = (shown: number) => (shown ? GROUP_MEMBERS_PAD_BOTTOM : 0);
 
-export const SIDEBAR_FIELD = { top: 46, height: SIDEBAR_FIELD_HEIGHT, radius: SIDEBAR_FIELD_HEIGHT / 2 } as const;
+export const SIDEBAR_FIELD = { inset: 8, top: 46, height: SIDEBAR_FIELD_HEIGHT, radius: SIDEBAR_FIELD_HEIGHT / 2 } as const;
 const DOWNLOADS_BUTTON_SIZE = 34;
 const FOOTER_BAND_BOTTOM = 3;
 const FOOTER_DOWNLOADS_BOTTOM = FOOTER_BAND_BOTTOM + (profileSwitcher.height - FOOTER_BAND_BOTTOM - DOWNLOADS_BUTTON_SIZE) / 2;
