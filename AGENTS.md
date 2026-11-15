@@ -4,6 +4,16 @@ Ardia is a macOS browser: Dia's polish and Arc's sidebar, built on Chrome's own 
 with no account. This file is how the owner works; follow it.
 For the architecture and the test tooling, read `docs/agent-brief.md`.
 
+## Local Ѫ fork development
+
+The owner requested a compact development setup. These local rules take precedence over the per-agent build-directory guidance below.
+
+- Keep one working checkout and one native build cache: `apps/browser/build-yus`. Queue native builds through the existing lock using `--as yus`; agents can run source checks in parallel.
+- Keep the user's app at `../../outputs/Ѫ.app`. Use `scripts/agent/yus-update.mjs` for repeatable local updates. Temporary install staging is removed when the update finishes.
+- Keep browser session/configuration backups small. Do not retain timestamped or `before-*` application bundles after a successful update.
+- Iterate on JavaScript through Metro and batch changes before a Release build. Reuse the same `build-yus` directory for Debug when native verification is required, then remove disposable test instances.
+- Preserve the native engine cache, package dependencies, current source changes and the user's browser data during cleanup.
+
 ## How work gets done
 - **Move fast.** Don't break work into phases or ask about details you can decide; there are no users to
   migrate yet. Ask only when the answer changes what you build.
